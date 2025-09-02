@@ -1,0 +1,200 @@
+2025-09-02 09:41:24.4740 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 09:41:25.1756 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 10:23:22.3461 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 10:23:23.0156 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:06:09.3851 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:06:09.9375 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:08:08.7459 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:08:09.3421 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:10:14.6974 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:10:15.3327 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:14:27.5690 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:14:28.1724 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:16:07.1367 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:16:07.9443 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:18:50.1218 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:18:50.7199 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:21:45.4729 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:21:46.1143 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:24:59.2641 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\bin\Debug\net6.0\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
+2025-09-02 11:24:59.7390 Error Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config Exception: NLog.NLogConfigurationException: Failed loading NLog configuration. Unknown log level: DEGUG (Parameter 'levelName')  FilePath: C:\Users\kiko lee\source\repos\SelectCourseAPI\SelectCourseAPI\nlog.config
+ ---> System.ArgumentException: Unknown log level: DEGUG (Parameter 'levelName')
+   at NLog.LogLevel.FromString(String levelName)
+   at NLog.Config.LoggingConfigurationParser.EnableLevelsForRule(LoggingRule rule, String enableLevels, String minLevel, String maxLevel, String finalMinLevel)
+   at NLog.Config.LoggingConfigurationParser.ParseRuleElement(ValidatedConfigurationElement loggerElement)
+   at NLog.Config.LoggingConfigurationParser.ParseRulesElement(ValidatedConfigurationElement rulesElement, IList`1 rulesCollection, Int32 rulesInsertPosition)
+   at NLog.Config.LoggingConfigurationParser.LoadConfig(ILoggingConfigurationElement nlogConfig, String basePath)
+   at NLog.Config.XmlLoggingConfiguration.ParseNLogElement(ILoggingConfigurationElement nlogElement, String filePath, Boolean autoReloadDefault)
+   at NLog.Config.XmlLoggingConfiguration.ParseFromTextReader(TextReader textReader, String filePath)
+   --- End of inner exception stack trace ---
