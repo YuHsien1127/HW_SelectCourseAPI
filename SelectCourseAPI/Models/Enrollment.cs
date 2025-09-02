@@ -12,7 +12,7 @@ namespace SelectCourseAPI.Models
         public decimal? GradePoint { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public byte[] RowVersion { get; set; } = null!;
+        public int RowVersion { get; set; }
 
         public virtual Course Course { get; set; } = null!;
         public virtual Student Student { get; set; } = null!;

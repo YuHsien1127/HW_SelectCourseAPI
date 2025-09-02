@@ -8,7 +8,7 @@ namespace SelectCourseAPI.Services
     public class CourseService : ICourseService
     {
         private readonly SelectCourseContext _context;
-        private readonly ILogger<ICourseService> _logger;
+        private readonly ILogger<CourseService> _logger;
         private readonly ICourseRepository _courseRepository;
         public CourseService(SelectCourseContext context, ILogger<ICourseService> logger, ICourseRepository courseRepository)
         {

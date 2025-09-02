@@ -15,8 +15,8 @@
         public int? Grade { get; set; }
         public string? LetterGrade { get; set; }
         public decimal? GradePoint { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-        public byte[] RowVersion { get; set; } = null!;
+        //public DateTime CreatedAt { get; set; }
+        //public DateTime UpdatedAt { get; set; }
+        //public int RowVersion { get; set; };
     }
 }

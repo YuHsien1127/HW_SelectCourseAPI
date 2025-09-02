@@ -20,6 +20,10 @@ namespace SelectCourseAPI.Repositorys
             return _context.Students.Find(id);
         }
 
+        public Student GetStudentByEmail(string email)
+        {
+            return _context.Students.FirstOrDefault(e=>e.Email == email);
+        }
         public void AddStudent(Student student)
         {
             _context.Students.Add(student);

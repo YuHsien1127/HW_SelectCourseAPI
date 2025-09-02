@@ -2,6 +2,7 @@
 using SelectCourseAPI.Dto.Response;
 using SelectCourseAPI.Models;
 using SelectCourseAPI.Repositorys;
+using System.Text.RegularExpressions;
 
 namespace SelectCourseAPI.Services
 {
@@ -82,6 +83,31 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】新增Student資料為空");
                     response.Success = false;
                     response.Message = "新增Student資料為空";
+                    return response;
+                }
+                // 驗證必填
+                if (studentRequest.FirstName == null || studentRequest.LastName == null || studentRequest.Email == null)
+                {
+                    _logger.LogWarning("【Warning】必填欄位不能為空");
+                    response.Success = false;
+                    response.Message = "必填欄位不能為空";
+                    return response;
+                }
+                // 驗證 Email 格式
+                if (!Regex.IsMatch(studentRequest.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                {
+                    _logger.LogWarning("【Warning】Email（{studentRequest.Email}）格式不正確", studentRequest.Email);
+                    response.Success = false;
+                    response.Message = "Email格式不正確";
+                    return response;
+                }
+                // 檢查 Email 是否已存在
+                var existEmail = _studentRepoaitory.GetStudentByEmail(studentRequest.Email);
+                if (existEmail != null)
+                {
+                    _logger.LogWarning("【Warning】Email（{studentRequest.Email}）已存在", studentRequest.Email);
+                    response.Success = false;
+                    response.Message = "Email已存在";
                     return response;
                 }
                 var student = new Student
@@ -205,7 +231,7 @@ namespace SelectCourseAPI.Services
                 }
                 _logger.LogDebug("【Debug】準備刪除Student資料（Id ：{student.Id}）", student.Id);
                 _studentRepoaitory.DeleteStudent(student);
-                int count = _context.SaveChanges();                
+                int count = _context.SaveChanges();
                 if (count > 0)
                 {
                     _logger.LogInformation("【Info】刪除成功（Id：{student.Id}）", student.Id); // log

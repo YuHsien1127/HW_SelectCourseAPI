@@ -63,10 +63,6 @@ namespace SelectCourseAPI.Models
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.RowVersion)
-                    .IsRowVersion()
-                    .IsConcurrencyToken();
-
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Course)
