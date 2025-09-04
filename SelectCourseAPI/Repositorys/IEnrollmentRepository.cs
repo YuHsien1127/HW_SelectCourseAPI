@@ -6,8 +6,8 @@ namespace SelectCourseAPI.Repositorys
     {
         public IQueryable<Enrollment> GetAllEnrollments();
         public Enrollment GetEnrollmentById(int studentId, int courseId);
-        public void AddStudent(Enrollment enrollment);
-        public void UpdateStudent(Enrollment enrollment);
-        public void DeleteStudent(Enrollment enrollment);
+        public void AddEnrollment(Enrollment enrollment);
+        public void UpdateEnrollment(Enrollment enrollment);
+        public void DeleteEnrollment(Enrollment enrollment);
     }
 }

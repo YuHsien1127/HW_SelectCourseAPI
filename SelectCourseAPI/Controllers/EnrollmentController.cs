@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SelectCourseAPI.Dto.Request;
+using SelectCourseAPI.Dto.Response;
+using SelectCourseAPI.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +11,66 @@ namespace SelectCourseAPI.Controllers
     [ApiController]
     public class EnrollmentController : ControllerBase
     {
-        // GET: api/<EnrollmentController>
+        private readonly IEnrollmentService _enrollmentService;
+        public EnrollmentController(IEnrollmentService enrollmentService)
+        {
+            _enrollmentService = enrollmentService;
+        }
+
+        /// <summary>
+        /// 取得全部 Enrollment
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public EnrollmentResponse GetAllEnrollment()
         {
-            return new string[] { "value1", "value2" };
+            return _enrollmentService.GetAllEnrollments();
         }
 
-        // GET api/<EnrollmentController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        /// <summary>
+        /// 根據 studentId 和 courseId 取得 Enrollment
+        /// </summary>
+        /// <param name="studentId">學生 Id</param>
+        /// <param name="courseId">課程 Id</param>
+        /// <returns></returns>
+        [HttpGet]
+        public EnrollmentResponse GetEnrollment(int studentId = 0, int courseId = 0)
         {
-            return "value";
+            return _enrollmentService.GetEnrollmentById(studentId, courseId);
         }
 
-        // POST api/<EnrollmentController>
+        /// <summary>
+        /// 選課
+        /// </summary>
+        /// <param name="studentId">學生 Id</param>
+        /// <param name="courseId">課程 Id</param>
+        /// <returns></returns>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public EnrollmentResponse Enroll(int studentId = 0 , int courseId = 0)
         {
+            return _enrollmentService.Enroll(studentId, courseId);
         }
 
-        // PUT api/<EnrollmentController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        /// <summary>
+        /// 更新成績
+        /// </summary>
+        /// <param name="enrollmentRequest">更新資料</param>
+        /// <returns></returns>
+        [HttpPut]
+        public EnrollmentResponse UpdateGrade([FromBody] EnrollmentRequest enrollmentRequest)
         {
+            return _enrollmentService.UpdateGrade(enrollmentRequest);
         }
-
-        // DELETE api/<EnrollmentController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        /// <summary>
+        /// 退選
+        /// </summary>
+        /// <param name="studentId">學生 Id</param>
+        /// <param name="courseId">課程 Id</param>
+        /// <returns></returns>
+        [HttpDelete]
+        public EnrollmentResponse Withdraw(int studentId = 0, int courseId = 0)
         {
+            return _enrollmentService.Withdraw(studentId, courseId);
         }
     }
 }

@@ -5,6 +5,11 @@ namespace SelectCourseAPI.Models
 {
     public partial class Course
     {
+        public Course()
+        {
+            Enrollments = new HashSet<Enrollment>();
+        }
+
         public int Id { get; set; }
         public string Code { get; set; } = null!;
         public string Title { get; set; } = null!;
@@ -12,5 +17,7 @@ namespace SelectCourseAPI.Models
         public bool? IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        public virtual ICollection<Enrollment> Enrollments { get; set; }
     }
 }

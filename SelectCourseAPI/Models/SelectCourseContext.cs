@@ -37,7 +37,7 @@ namespace SelectCourseAPI.Models
 
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getutcdate())");
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -47,14 +47,14 @@ namespace SelectCourseAPI.Models
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getutcdate())");
+                    .HasDefaultValueSql("(getdate())");
             });
 
             modelBuilder.Entity<Enrollment>(entity =>
             {
-                entity.HasNoKey();
-
-                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.GradePoint).HasColumnType("decimal(3, 2)");
 
@@ -63,16 +63,24 @@ namespace SelectCourseAPI.Models
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+                entity.Property(e => e.Status)
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .HasDefaultValueSql("('A')")
+                    .IsFixedLength();
+
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.HasOne(d => d.Course)
-                    .WithMany()
+                    .WithMany(p => p.Enrollments)
                     .HasForeignKey(d => d.CourseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Enrollments_Courses");
 
                 entity.HasOne(d => d.Student)
-                    .WithMany()
+                    .WithMany(p => p.Enrollments)
                     .HasForeignKey(d => d.StudentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Enrollments_Students");
@@ -82,7 +90,7 @@ namespace SelectCourseAPI.Models
             {
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getutcdate())");
+                    .HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Email).HasMaxLength(100);
 
@@ -96,7 +104,7 @@ namespace SelectCourseAPI.Models
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getutcdate())");
+                    .HasDefaultValueSql("(getdate())");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -9,7 +9,7 @@
     public class EnrollmentDto
     {
         public int StudentId { get; set; }
-        public StudentDto? Students { get; set; }
+        public StudentDto? Student { get; set; }
         public int CourseId { get; set; }
         public CourseDto? Courses { get; set; }
         public int? Grade { get; set; }

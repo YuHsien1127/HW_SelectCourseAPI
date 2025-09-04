@@ -10,12 +10,12 @@ namespace SelectCourseAPI.Services
     {
         private readonly SelectCourseContext _context;
         private readonly ILogger<StudentService> _logger;
-        private readonly IStudentRepository _studentRepoaitory;
+        private readonly IStudentRepository _studentRepository;
         public StudentService(SelectCourseContext context, ILogger<StudentService> logger, IStudentRepository studentRepoaitory)
         {
             _context = context;
             _logger = logger;
-            _studentRepoaitory = studentRepoaitory;
+            _studentRepository = studentRepoaitory;
         }
 
         public StudentResponse GetAllStudents()
@@ -23,22 +23,22 @@ namespace SelectCourseAPI.Services
             _logger.LogTrace("【Trace】進入GetAllStudent");
             StudentResponse response = new StudentResponse();
 
-            var students = _studentRepoaitory.GetAllStudents();
+            var students = _studentRepository.GetAllStudents().Where(i => i.IsActive == true)
+                .Select(x => new StudentDto
+                {
+                    Id = x.Id,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Email = x.Email
+                });
             _logger.LogDebug("【Debug】取得Student數量：{students.Count()}", students.Count());
-            var s = students.Select(x => new StudentDto
-            {
-                Id = x.Id,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Email = x.Email
-            });
-            response.Students = s.ToList();
+
+            response.Students = students.ToList();
             response.Success = true;
             response.Message = "查詢成功";
             _logger.LogTrace("【Trace】離開GetAllStudent");
             return response;
         }
-
         public StudentResponse GetStudentById(int id)
         {
             _logger.LogTrace("【Trace】進入GetStudentById");
@@ -50,12 +50,19 @@ namespace SelectCourseAPI.Services
                 response.Message = "Id為空";
                 return response;
             }
-            var student = _studentRepoaitory.GetStudentById(id);
+            var student = _studentRepository.GetStudentById(id);
             if (student == null)
             {
                 _logger.LogWarning("【Warning】無此Id（{Id}）學生", id);
                 response.Success = false;
                 response.Message = "無此Id學生";
+                return response;
+            }
+            if(student.IsActive == false)
+            {
+                _logger.LogWarning("【Warning】此Id（{Id}）學生已停用", id);
+                response.Success = false;
+                response.Message = "此Id學生已停用";
                 return response;
             }
             var s = new StudentDto()
@@ -71,6 +78,12 @@ namespace SelectCourseAPI.Services
             _logger.LogTrace("【Trace】離開GetStudentById");
             return response;
         }
+        /*
+         * 新增學生
+         * 1. 驗證必瑱（FirstName/LastName/Email 不能為空）
+         * 2. 驗證Email格式（ex. abc@example.com） 
+         * 3. 驗證Email是否已存在
+         */
         public StudentResponse AddStudent(StudentRequest studentRequest)
         {
             _logger.LogTrace("【Trace】進入AddStudent");
@@ -85,16 +98,23 @@ namespace SelectCourseAPI.Services
                     response.Message = "新增Student資料為空";
                     return response;
                 }
-                // 驗證必填
-                if (studentRequest.FirstName == null || studentRequest.LastName == null || studentRequest.Email == null)
+                if (studentRequest != null)
                 {
-                    _logger.LogWarning("【Warning】必填欄位不能為空");
-                    response.Success = false;
-                    response.Message = "必填欄位不能為空";
-                    return response;
+                    // 驗證必填
+                    if (studentRequest.FirstName == null || studentRequest.LastName == null || studentRequest.Email == null)
+                    {
+                        _logger.LogWarning("【Warning】必填欄位不能為空");
+                        response.Success = false;
+                        response.Message = "必填欄位不能為空";
+                        return response;
+                    }
                 }
                 // 驗證 Email 格式
-                if (!Regex.IsMatch(studentRequest.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                // ^（開頭）
+                // [^@\s]（不能是 @ 或空白的字元，至少一個）
+                // \.（一個小數點）
+                // $（結尾）
+                if (!Regex.IsMatch(studentRequest.Email, @"^[^@\s]+@example\.com$"))
                 {
                     _logger.LogWarning("【Warning】Email（{studentRequest.Email}）格式不正確", studentRequest.Email);
                     response.Success = false;
@@ -102,7 +122,7 @@ namespace SelectCourseAPI.Services
                     return response;
                 }
                 // 檢查 Email 是否已存在
-                var existEmail = _studentRepoaitory.GetStudentByEmail(studentRequest.Email);
+                var existEmail = _studentRepository.GetStudentByEmail(studentRequest.Email);
                 if (existEmail != null)
                 {
                     _logger.LogWarning("【Warning】Email（{studentRequest.Email}）已存在", studentRequest.Email);
@@ -117,7 +137,7 @@ namespace SelectCourseAPI.Services
                     Email = studentRequest.Email,
                     CreatedAt = DateTime.Now
                 };
-                _studentRepoaitory.AddStudent(student);
+                _studentRepository.AddStudent(student);
                 int count = _context.SaveChanges();
                 var s = new StudentDto
                 {
@@ -163,19 +183,26 @@ namespace SelectCourseAPI.Services
                     response.Message = "Id或更新項目為空";
                     return response;
                 }
-                var existStudent = _studentRepoaitory.GetStudentById(id);
+                var existStudent = _studentRepository.GetStudentById(id);
                 if (existStudent == null)
                 {
                     _logger.LogWarning("【Warning】此Id（{id}）的Student資料為空", id); //log
                     response.Success = false;
-                    response.Message = "Student資料為空";
+                    response.Message = "此Id的Student資料為空";
+                    return response;
+                }
+                if (existStudent.IsActive == false)
+                {
+                    _logger.LogWarning("【Warning】此Id（{Id}）學生已停用", id);
+                    response.Success = false;
+                    response.Message = "此Id學生已停用";
                     return response;
                 }
                 existStudent.FirstName = studentRequest.FirstName == "" ? existStudent.FirstName : studentRequest.FirstName;
                 existStudent.LastName = studentRequest.LastName == "" ? existStudent.LastName : studentRequest.LastName;
                 existStudent.Email = studentRequest.Email == "" ? existStudent.Email : studentRequest.Email;
                 existStudent.UpdatedAt = DateTime.Now;
-                _studentRepoaitory.UpdateStudent(existStudent);
+                _studentRepository.UpdateStudent(existStudent);
                 int count = _context.SaveChanges();
                 var s = new StudentDto
                 {
@@ -221,7 +248,7 @@ namespace SelectCourseAPI.Services
                     response.Message = "Id為空";
                     return response;
                 }
-                var student = _studentRepoaitory.GetStudentById(id);
+                var student = _studentRepository.GetStudentById(id);
                 if (student == null)
                 {
                     _logger.LogWarning("【Warning】無此Id（{Id}）學生", id);
@@ -230,7 +257,9 @@ namespace SelectCourseAPI.Services
                     return response;
                 }
                 _logger.LogDebug("【Debug】準備刪除Student資料（Id ：{student.Id}）", student.Id);
-                _studentRepoaitory.DeleteStudent(student);
+                student.IsActive = false;
+                student.UpdatedAt = DateTime.Now;
+                _studentRepository.UpdateStudent(student);
                 int count = _context.SaveChanges();
                 if (count > 0)
                 {
