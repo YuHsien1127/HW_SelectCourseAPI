@@ -46,13 +46,15 @@ namespace SelectCourseAPI.Test
                new Enrollment { Id = 5, StudentId = 4, CourseId = 1, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "A" }
            );
             _context.SaveChanges();
+
             _mockStudentRepository = new Mock<IStudentRepository>();
+            _mockEnrollmentRepository = new Mock<IEnrollmentRepository>();
 
             // Repository 模擬回傳資料
-            _mockStudentRepository.Setup(r => r.GetStudentById(It.IsAny<int>())).Returns((int id) => _context.Students.FirstOrDefault(s => s.Id == id));
-            _mockStudentRepository.Setup(r => r.GetStudentByEmail(It.IsAny<string>())).Returns((string email) => _context.Students.FirstOrDefault(s => s.Email == email));
-
-            _mockEnrollmentRepository = new Mock<IEnrollmentRepository>();
+            _mockStudentRepository.Setup(r => r.GetStudentById(It.IsAny<int>()))
+                .Returns((int id) => _context.Students.FirstOrDefault(s => s.Id == id));
+            _mockStudentRepository.Setup(r => r.GetStudentByEmail(It.IsAny<string>()))
+                .Returns((string email) => _context.Students.FirstOrDefault(s => s.Email == email));
 
             _mockEnrollmentRepository.Setup(r => r.GetAllEnrollments()).Returns(_context.Enrollments.AsQueryable());
 

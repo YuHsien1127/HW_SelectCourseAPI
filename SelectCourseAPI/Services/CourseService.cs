@@ -50,9 +50,10 @@ namespace SelectCourseAPI.Services
             CourseResponse response = new CourseResponse();
             if (id == 0)
             {
-                _logger.LogWarning("【Warning】Id為空");
+                _logger.LogWarning("【Warning】Id（{id}）為空", id);
                 response.Success = false;
                 response.Message = "Id為空";
+                _logger.LogTrace("【Trace】離開GetCourseById");
                 return response;
             }
             var course = _courseRepository.GetCourseById(id);
@@ -61,6 +62,7 @@ namespace SelectCourseAPI.Services
                 _logger.LogWarning("【Warning】無此Id（{Id}）課程", id);
                 response.Success = false;
                 response.Message = "無此Id課程";
+                _logger.LogTrace("【Trace】離開GetCourseById");
                 return response;
             }
             if (course.IsActive == false)
@@ -68,6 +70,7 @@ namespace SelectCourseAPI.Services
                 _logger.LogWarning("【Warning】此Id（{Id}）課程已停用", id);
                 response.Success = false;
                 response.Message = "此Id課程已停用";
+                _logger.LogTrace("【Trace】離開GetCourseById");
                 return response;
             }
             var c = new CourseDto()
@@ -96,6 +99,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】新增Course資料為空");
                     response.Success = false;
                     response.Message = "新增Course資料為空";
+                    _logger.LogTrace("【Trace】離開AddCourse");
                     return response;
                 }
                 var existCourse = _courseRepository.GetCourseByCode(courseRequest.Code);
@@ -104,6 +108,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】課程代碼（{courseRequest.Code}）已存在", courseRequest.Code);
                     response.Success = false;
                     response.Message = "課程代碼已存在";
+                    _logger.LogTrace("【Trace】離開AddCourse");
                     return response;
                 }
                 var course = new Course
@@ -155,9 +160,10 @@ namespace SelectCourseAPI.Services
             {
                 if (id == 0)
                 {
-                    _logger.LogWarning("【Warning】Id為空");
+                    _logger.LogWarning("【Warning】Id（{id}）為空", id);
                     response.Success = false;
                     response.Message = "Id為空";
+                    _logger.LogTrace("【Trace】離開DeleteCourse");
                     return response;
                 }
                 var course = _courseRepository.GetCourseById(id);
@@ -166,6 +172,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】無此Id（{Id}）課程", id);
                     response.Success = false;
                     response.Message = "無此Id課程";
+                    _logger.LogTrace("【Trace】離開DeleteCourse");
                     return response;
                 }
                 _logger.LogDebug("【Debug】準備刪除Course資料（Id ：{course.Id}）", course.Id);
@@ -176,6 +183,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】有被選課，無法刪除");
                     response.Success = false;
                     response.Message = "有被選課，無法刪除";
+                    _logger.LogTrace("【Trace】離開DeleteCourse");
                     return response;
                 }
                 course.IsActive = false;
@@ -217,6 +225,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】Id或更新項目為空");
                     response.Success = false;
                     response.Message = "Id或更新項目為空";
+                    _logger.LogTrace("【Trace】離開UpdateCourse");
                     return response;
                 }
                 var existCourse = _courseRepository.GetCourseById(id);
@@ -225,6 +234,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】此Id（{id}）的Course資料為空", id); //log
                     response.Success = false;
                     response.Message = "Course資料為空";
+                    _logger.LogTrace("【Trace】離開UpdateCourse");
                     return response;
                 }
                 if (existCourse.IsActive == false)
@@ -232,6 +242,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】此Id（{Id}）課程已停用", id);
                     response.Success = false;
                     response.Message = "此Id課程已停用";
+                    _logger.LogTrace("【Trace】離開UpdateCourse");
                     return response;
                 }
                 existCourse.Code = courseRequest.Code == "" ? existCourse.Code : courseRequest.Code;

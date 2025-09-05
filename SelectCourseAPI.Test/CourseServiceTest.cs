@@ -49,14 +49,16 @@ namespace SelectCourseAPI.Test
                 new Enrollment { Id = 5, StudentId = 4, CourseId = 1, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "A" }
             );
             _context.SaveChanges();
+
             _mockCourseRepository = new Mock<ICourseRepository>();
-
-            // Repository 模擬回傳資料
-            _mockCourseRepository.Setup(r => r.GetCourseById(It.IsAny<int>())).Returns((int id) => _context.Courses.FirstOrDefault(s => s.Id == id));
-            _mockCourseRepository.Setup(r => r.GetCourseByCode(It.IsAny<string>())).Returns((string code) => _context.Courses.FirstOrDefault(s => s.Code == code));
-
             _mockEnrollmentRepository = new Mock<IEnrollmentRepository>();
 
+            // Repository 模擬回傳資料
+            _mockCourseRepository.Setup(r => r.GetCourseById(It.IsAny<int>()))
+                .Returns((int id) => _context.Courses.FirstOrDefault(s => s.Id == id));
+            _mockCourseRepository.Setup(r => r.GetCourseByCode(It.IsAny<string>()))
+                .Returns((string code) => _context.Courses.FirstOrDefault(s => s.Code == code));
+            
             _mockEnrollmentRepository.Setup(r => r.GetAllEnrollments()).Returns(_context.Enrollments.AsQueryable());
 
             _mockLogger = new Mock<ILogger<CourseService>>();

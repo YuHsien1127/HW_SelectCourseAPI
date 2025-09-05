@@ -54,6 +54,7 @@ namespace SelectCourseAPI.Services
                 _logger.LogWarning("【Warning】Id為空");
                 response.Success = false;
                 response.Message = "Id為空";
+                _logger.LogTrace("【Trace】離開GetStudentById");
                 return response;
             }
             var student = _studentRepository.GetStudentById(id);
@@ -62,6 +63,7 @@ namespace SelectCourseAPI.Services
                 _logger.LogWarning("【Warning】無此Id（{Id}）學生", id);
                 response.Success = false;
                 response.Message = "無此Id學生";
+                _logger.LogTrace("【Trace】離開GetStudentById");
                 return response;
             }
             if(student.IsActive == false)
@@ -69,6 +71,7 @@ namespace SelectCourseAPI.Services
                 _logger.LogWarning("【Warning】此Id（{Id}）學生已停用", id);
                 response.Success = false;
                 response.Message = "此Id學生已停用";
+                _logger.LogTrace("【Trace】離開GetStudentById");
                 return response;
             }
             var s = new StudentDto()
@@ -86,7 +89,7 @@ namespace SelectCourseAPI.Services
         }
         /*
          * 新增學生
-         * 1. 驗證必瑱（FirstName/LastName/Email 不能為空）
+         * 1. 驗證必瑱（FirstName/LastName/Email 不能為 null & " "）
          * 2. 驗證Email格式（ex. abc@example.com） 
          * 3. 驗證Email是否已存在
          */
@@ -102,6 +105,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】新增Student資料為空");
                     response.Success = false;
                     response.Message = "新增Student資料為空";
+                    _logger.LogTrace("【Trace】離開AddStudent");
                     return response;
                 }
                 else
@@ -112,6 +116,7 @@ namespace SelectCourseAPI.Services
                         _logger.LogWarning("【Warning】必填欄位不能為空");
                         response.Success = false;
                         response.Message = "必填欄位不能為空";
+                        _logger.LogTrace("【Trace】離開AddStudent");
                         return response;
                     }
                 }
@@ -127,6 +132,8 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】Email（{studentRequest.Email}）格式不正確", studentRequest.Email);
                     response.Success = false;
                     response.Message = "Email格式不正確";
+                    _logger.LogTrace("【Trace】離開AddStudent");
+                    _logger.LogTrace("【Trace】離開AddStudent");
                     return response;
                 }
                 // 檢查 Email 是否已存在
@@ -136,6 +143,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】Email（{studentRequest.Email}）已存在", studentRequest.Email);
                     response.Success = false;
                     response.Message = "Email已存在";
+                    _logger.LogTrace("【Trace】離開AddStudent");
                     return response;
                 }
                 var student = new Student
@@ -172,6 +180,7 @@ namespace SelectCourseAPI.Services
             {
                 _logger.LogError(ex, "【Error】新增發生錯誤"); //log 嚴重錯誤
                 response.Success = false;
+
                 response.Message = "新增發生錯誤";
             }
             _logger.LogTrace("【Trace】離開AddStudent");
@@ -189,6 +198,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】Id或更新項目為空");
                     response.Success = false;
                     response.Message = "Id或更新項目為空";
+                    _logger.LogTrace("【Trace】離開UpdateStudent");
                     return response;
                 }
                 var existStudent = _studentRepository.GetStudentById(id);
@@ -197,6 +207,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】此Id（{id}）的Student資料為空", id); //log
                     response.Success = false;
                     response.Message = "此Id的Student資料為空";
+                    _logger.LogTrace("【Trace】離開UpdateStudent");
                     return response;
                 }
                 if (existStudent.IsActive == false)
@@ -204,6 +215,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】此Id（{Id}）學生已停用", id);
                     response.Success = false;
                     response.Message = "此Id學生已停用";
+                    _logger.LogTrace("【Trace】離開UpdateStudent");
                     return response;
                 }
                 existStudent.FirstName = string.IsNullOrEmpty(studentRequest.FirstName) ? existStudent.FirstName : studentRequest.FirstName;
@@ -254,6 +266,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】Id為空");
                     response.Success = false;
                     response.Message = "Id為空";
+                    _logger.LogTrace("【Trace】離開DeleteStudent");
                     return response;
                 }
                 var student = _studentRepository.GetStudentById(id);
@@ -262,6 +275,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】無此Id（{Id}）學生", id);
                     response.Success = false;
                     response.Message = "無此Id學生";
+                    _logger.LogTrace("【Trace】離開DeleteStudent");
                     return response;
                 }
                 _logger.LogDebug("【Debug】準備刪除Student資料（Id ：{student.Id}）", student.Id);
@@ -272,6 +286,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】還有課程，無法刪除");
                     response.Success = false;
                     response.Message = "還有課程，無法刪除";
+                    _logger.LogTrace("【Trace】離開DeleteStudent");
                     return response;
                 }
                 student.IsActive = false;

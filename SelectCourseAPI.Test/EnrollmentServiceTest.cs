@@ -30,7 +30,7 @@ namespace SelectCourseAPI.Test
                 .UseInMemoryDatabase(databaseName: "TestEnrollmentDB")
                 .Options;
             _context = new SelectCourseContext(options);
-
+            // 清掉舊資料，避免測試間互相干擾
             _context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
 
@@ -66,8 +66,10 @@ namespace SelectCourseAPI.Test
             // Repository 模擬回傳資料
             _mockCourseRepository.Setup(r => r.GetCourseById(It.IsAny<int>()))
                 .Returns((int id) => _context.Courses.FirstOrDefault(c => c.Id == id));
+
             _mockStudentRepository.Setup(r => r.GetStudentById(It.IsAny<int>()))
                 .Returns((int id) => _context.Students.FirstOrDefault(s => s.Id == id));
+
             _mockEnrollmentRepository.Setup(r => r.GetEnrollmentById(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns((int sId, int cId) => _context.Enrollments.FirstOrDefault(e => e.StudentId == sId && e.CourseId == cId));
             _mockEnrollmentRepository.Setup(r => r.AddEnrollment(It.IsAny<Enrollment>()))
@@ -286,7 +288,6 @@ namespace SelectCourseAPI.Test
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("資料不完整"));
         }
-
         [Test] // 測試 UpdateGaded => Enrollment 不存在
         public void UpdateGrade_NoExisting_ReturrnFail()
         {

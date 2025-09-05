@@ -67,6 +67,7 @@ namespace SelectCourseAPI.Services
                 _logger.LogWarning("【Warning】StudentId或CourseId為空");
                 response.Success = false;
                 response.Message = "StudentId或CourseId為空";
+                _logger.LogTrace("【Trace】離開GetEnrollmentById");
                 return response;
             }
             var enrollment = _enrollmentRepository.GetEnrollmentById(studentId, courseId);
@@ -75,6 +76,7 @@ namespace SelectCourseAPI.Services
                 _logger.LogWarning("【Warning】無此選課資料");
                 response.Success = false;
                 response.Message = "無此選課資料";
+                _logger.LogTrace("【Trace】離開GetEnrollmentById");
                 return response;
             }
             if (enrollment.Status == "W")
@@ -82,6 +84,7 @@ namespace SelectCourseAPI.Services
                 _logger.LogWarning("【Warning】已退選");
                 response.Success = false;
                 response.Message = "已退選";
+                _logger.LogTrace("【Trace】離開GetEnrollmentById");
                 return response;
             }
             var e = new EnrollmentDto
@@ -129,6 +132,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】Id為空");
                     response.Success = false;
                     response.Message = "Id為空";
+                    _logger.LogTrace("【Trace】離開Enroll");
                     return response;
                 }
                 // 驗證 Student/Course 存在且 IsActice
@@ -138,6 +142,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】StudentId不存在或已停用：{StudentId}", studentId);
                     response.Success = false;
                     response.Message = "學生不存在或已停用";
+                    _logger.LogTrace("【Trace】離開Enroll");
                     return response;
                 }
                 var course = _courseRepository.GetCourseById(courseId);
@@ -146,6 +151,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】課程不存在或已停用：{CourseId}", courseId);
                     response.Success = false;
                     response.Message = "課程不存在或已停用";
+                    _logger.LogTrace("【Trace】離開Enroll");
                     return response;
                 }
                 // 檢查是否已選過該課程
@@ -155,6 +161,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】學生已選過該課程：StudentId={StudentId}, CourseId={CourseId}", studentId, courseId);
                     response.Success = false;
                     response.Message = "已選過該課程";
+                    _logger.LogTrace("【Trace】離開Enroll");
                     return response;
                 }
 
@@ -231,6 +238,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】資料為空");
                     response.Success = false;
                     response.Message = "資料為空";
+                    _logger.LogTrace("【Trace】離開UpdateGrade");
                     return response;
                 }
                 if (enrollmentRequest.StudentId == 0 || enrollmentRequest.CourseId == 0 || enrollmentRequest.Grade == null)
@@ -238,6 +246,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】資料不完整");
                     response.Success = false;
                     response.Message = "資料不完整";
+                    _logger.LogTrace("【Trace】離開UpdateGrade");
                     return response;
                 }
                 if (enrollmentRequest.Grade < 0 || enrollmentRequest.Grade > 100)
@@ -245,6 +254,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】成績（{enrollment.Grade}）超過範圍（0~100）", enrollmentRequest.Grade);
                     response.Success = false;
                     response.Message = "成績超過範圍（0~100）";
+                    _logger.LogTrace("【Trace】離開UpdateGrade");
                     return response;
                 }
                 var enrollment = _enrollmentRepository.GetEnrollmentById(enrollmentRequest.StudentId, enrollmentRequest.CourseId);
@@ -253,6 +263,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】資料不存在");
                     response.Success = false;
                     response.Message = "資料不存在";
+                    _logger.LogTrace("【Trace】離開UpdateGrade");
                     return response;
                 }
                 if (enrollment.Status == "W")
@@ -260,6 +271,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】已退選");
                     response.Success = false;
                     response.Message = "已退選";
+                    _logger.LogTrace("【Trace】離開UpdateGrade");
                     return response;
                 }
                 if (enrollment.Grade != null)
@@ -318,7 +330,7 @@ namespace SelectCourseAPI.Services
         /* 退選
          * 1. 課程若不存在 => 回傳404
          * 2. 退選時若有成績則無法退選
-         * 3. 退選無成績，則將 Status 設定 W
+         * 3. 退選時無成績，則將 Status 設定 W
          */
         public EnrollmentResponse Withdraw(int studentId, int courseId)
         {
@@ -332,6 +344,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】StudentId或CourseId為空");
                     response.Success = false;
                     response.Message = "StudentId或CourseId為空";
+                    _logger.LogTrace("【Trace】離開Withdraw");
                     return response;
                 }
                 var enrollment = _enrollmentRepository.GetEnrollmentById(studentId, courseId);
@@ -340,6 +353,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】無此選課資料");
                     response.Success = false;
                     response.Message = "無此選課資料";
+                    _logger.LogTrace("【Trace】離開Withdraw");
                     return response;
                 }
                 if (enrollment.Grade.HasValue)
@@ -347,6 +361,7 @@ namespace SelectCourseAPI.Services
                     _logger.LogWarning("【Warning】已有成績（{enrollment.Grade}），無法退選", enrollment.Grade);
                     response.Success = false;
                     response.Message = "已有成績，無法退選";
+                    _logger.LogTrace("【Trace】離開Withdraw");
                     return response;
                 }
                 enrollment.Status = "W";
