@@ -25,7 +25,7 @@ namespace SelectCourseAPI.Services
         {
             _logger.LogTrace("【Trace】進入GetAllEnrollments");
             EnrollmentResponse response = new EnrollmentResponse();
-            var enrollment = _enrollmentRepository.GetAllEnrollments().Where(s => s.Status == "A")
+            var enrollment = _enrollmentRepository.GetAllEnrollments().Where(s => s.Status == "A ")
                 .Select(e => new EnrollmentDto
                 {
                     StudentId = e.StudentId,
@@ -73,7 +73,7 @@ namespace SelectCourseAPI.Services
                 response.Message = "無此選課資料";
                 return response;
             }
-            if (enrollment.Status == "W")
+            if (enrollment.Status == "W ")
             {
                 _logger.LogWarning("【Warning】已退選");
                 response.Success = false;

@@ -11,11 +11,13 @@ namespace SelectCourseAPI.Services
         private readonly SelectCourseContext _context;
         private readonly ILogger<StudentService> _logger;
         private readonly IStudentRepository _studentRepository;
-        public StudentService(SelectCourseContext context, ILogger<StudentService> logger, IStudentRepository studentRepoaitory)
+        private readonly IEnrollmentRepository _enrollmentRepository;
+        public StudentService(SelectCourseContext context, ILogger<StudentService> logger, IStudentRepository studentRepoaitory, IEnrollmentRepository enrollmentRepository)
         {
             _context = context;
             _logger = logger;
             _studentRepository = studentRepoaitory;
+            _enrollmentRepository = enrollmentRepository;
         }
 
         public StudentResponse GetAllStudents()
@@ -257,6 +259,15 @@ namespace SelectCourseAPI.Services
                     return response;
                 }
                 _logger.LogDebug("【Debug】準備刪除Student資料（Id ：{student.Id}）", student.Id);
+                var enrollmentCount = _enrollmentRepository.GetAllEnrollments().Where(c => c.StudentId == id && c.Status == "A ").Count();
+                _logger.LogDebug("【Debug】enrollment資料（Count ：{enrollmentCount}）", enrollmentCount);
+                if (enrollmentCount > 0)
+                {
+                    _logger.LogWarning("【Warning】還有課程，無法刪除");
+                    response.Success = false;
+                    response.Message = "還有課程，無法刪除";
+                    return response;
+                }
                 student.IsActive = false;
                 student.UpdatedAt = DateTime.Now;
                 _studentRepository.UpdateStudent(student);

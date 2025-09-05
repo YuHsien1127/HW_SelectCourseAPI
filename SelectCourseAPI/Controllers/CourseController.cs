@@ -67,7 +67,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="id">課程 Id</param>
         /// <returns></returns>
         [HttpDelete]
-        public CourseResponse DeleteCourse(int id)
+        public CourseResponse DeleteCourse(int id = 0)
         {
             return _courseService.DeleteCourse(id);
         }

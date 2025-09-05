@@ -10,11 +10,13 @@ namespace SelectCourseAPI.Services
         private readonly SelectCourseContext _context;
         private readonly ILogger<CourseService> _logger;
         private readonly ICourseRepository _courseRepository;
-        public CourseService(SelectCourseContext context, ILogger<CourseService> logger, ICourseRepository courseRepository)
+        private readonly IEnrollmentRepository _enrollmentRepository;
+        public CourseService(SelectCourseContext context, ILogger<CourseService> logger, ICourseRepository courseRepository, IEnrollmentRepository enrollmentRepository)
         {
             _context = context;
             _logger = logger;
             _courseRepository = courseRepository;
+            _enrollmentRepository = enrollmentRepository;
         }
 
         public CourseResponse GetAllCourses()
@@ -163,6 +165,15 @@ namespace SelectCourseAPI.Services
                     return response;
                 }
                 _logger.LogDebug("【Debug】準備刪除Course資料（Id ：{course.Id}）", course.Id);
+                var enrollmentCount = _enrollmentRepository.GetAllEnrollments().Where(c => c.CourseId == id && c.Status == "A ").Count();
+                _logger.LogDebug("【Debug】enrollment資料（Count ：{enrollmentCount}）", enrollmentCount);
+                if(enrollmentCount > 0)
+                {
+                    _logger.LogWarning("【Warning】有被選課，無法刪除");
+                    response.Success = false;
+                    response.Message = "有被選課，無法刪除";
+                    return response;
+                }
                 course.IsActive = false;
                 course.UpdatedAt = DateTime.Now;
                 _courseRepository.UpdateCourse(course);
