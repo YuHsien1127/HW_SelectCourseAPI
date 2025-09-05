@@ -39,11 +39,11 @@ namespace SelectCourseAPI.Test
                 new Student { Id = 5, FirstName = "I", LastName = "J", Email = "ij@example.com", IsActive = true }
             );
             _context.Enrollments.AddRange(
-               new Enrollment { Id = 1, StudentId = 3, CourseId = 1, Grade = 90, LetterGrade = "A", GradePoint = 4m, RowVersion = 0, Status = "A " },
-               new Enrollment { Id = 2, StudentId = 1, CourseId = 3, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "W " },
-               new Enrollment { Id = 3, StudentId = 5, CourseId = 1, Grade = 80, LetterGrade = "B", GradePoint = 3m, RowVersion = 0, Status = "A " },
-               new Enrollment { Id = 4, StudentId = 3, CourseId = 1, Grade = 75, LetterGrade = "C", GradePoint = 2m, RowVersion = 0, Status = "A " },
-               new Enrollment { Id = 5, StudentId = 4, CourseId = 1, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "A " }
+               new Enrollment { Id = 1, StudentId = 3, CourseId = 1, Grade = 90, LetterGrade = "A", GradePoint = 4m, RowVersion = 0, Status = "A" },
+               new Enrollment { Id = 2, StudentId = 1, CourseId = 3, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "W" },
+               new Enrollment { Id = 3, StudentId = 5, CourseId = 1, Grade = 80, LetterGrade = "B", GradePoint = 3m, RowVersion = 0, Status = "A" },
+               new Enrollment { Id = 4, StudentId = 3, CourseId = 1, Grade = 75, LetterGrade = "C", GradePoint = 2m, RowVersion = 0, Status = "A" },
+               new Enrollment { Id = 5, StudentId = 4, CourseId = 1, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "A" }
            );
             _context.SaveChanges();
             _mockStudentRepository = new Mock<IStudentRepository>();
@@ -77,7 +77,7 @@ namespace SelectCourseAPI.Test
         public void GetAllStudents_ReturnIsActiveStudents()
         {
             _mockStudentRepository.Setup(r => r.GetAllStudents()).Returns(_context.Students.AsQueryable());
-            var result = _studentService.GetAllStudents();
+            var result = _studentService.GetAllStudents(1, 10);
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("查詢成功"));
             Assert.That(result.Students.Count, Is.EqualTo(4));
@@ -158,11 +158,11 @@ namespace SelectCourseAPI.Test
             Assert.That(addResult.Success, Is.False);
             Assert.That(addResult.Message, Is.EqualTo("新增Student資料為空"));
         }
-        [Test] // 測試 AddStudent => FirstName 為空
+        [Test] // 測試 AddStudent => FirstName null
         public void AddStudent_NullFirstName_ReturnFail()
         {
             // 建立測試新增資料（FirstName Null）
-            var addRequest = new StudentRequest { LastName = "add", Email = "add@example.com" };
+            var addRequest = new StudentRequest { FirstName = null, LastName = "add", Email = "add@example.com" };
             _mockStudentRepository.Setup(r => r.AddStudent(It.IsAny<Student>()))
                 .Callback<Student>(s => _context.Students.Add(s));
 
@@ -170,11 +170,11 @@ namespace SelectCourseAPI.Test
             Assert.That(addResult.Success, Is.False);
             Assert.That(addResult.Message, Is.EqualTo("必填欄位不能為空"));
         }
-        [Test] // 測試 AddStudent => LastName 為空
+        [Test] // 測試 AddStudent => LastName null
         public void AddStudent_NullLastName_ReturnFail()
         {
             // 建立測試新增資料（LastName Null）
-            var addRequest = new StudentRequest { FirstName = "add", Email = "add@example.com" };
+            var addRequest = new StudentRequest { FirstName = "add", LastName = null, Email = "add@example.com" };
             _mockStudentRepository.Setup(r => r.AddStudent(It.IsAny<Student>()))
                 .Callback<Student>(s => _context.Students.Add(s));
 
@@ -182,11 +182,47 @@ namespace SelectCourseAPI.Test
             Assert.That(addResult.Success, Is.False);
             Assert.That(addResult.Message, Is.EqualTo("必填欄位不能為空"));
         }
-        [Test] // 測試 AddStudent => Email 為空
+        [Test] // 測試 AddStudent => Email null
         public void AddStudent_NullEmail_ReturnFail()
         {
             // 建立測試新增資料（Email Null）
-            var addRequest = new StudentRequest { FirstName = "add", LastName = "add" };
+            var addRequest = new StudentRequest { FirstName = "add", LastName = "add", Email = null };
+            _mockStudentRepository.Setup(r => r.AddStudent(It.IsAny<Student>()))
+                .Callback<Student>(s => _context.Students.Add(s));
+
+            var addResult = _studentService.AddStudent(addRequest);
+            Assert.That(addResult.Success, Is.False);
+            Assert.That(addResult.Message, Is.EqualTo("必填欄位不能為空"));
+        }
+        [Test] // 測試 AddStudent => FirstName empty
+        public void AddStudent_EmptyFirstName_ReturnFail()
+        {
+            // 建立測試新增資料（FirstName Null）
+            var addRequest = new StudentRequest { FirstName = "" ,LastName = "add", Email = "add@example.com" };
+            _mockStudentRepository.Setup(r => r.AddStudent(It.IsAny<Student>()))
+                .Callback<Student>(s => _context.Students.Add(s));
+
+            var addResult = _studentService.AddStudent(addRequest);
+            Assert.That(addResult.Success, Is.False);
+            Assert.That(addResult.Message, Is.EqualTo("必填欄位不能為空"));
+        }
+        [Test] // 測試 AddStudent => LastName empty
+        public void AddStudent_EmptyLastName_ReturnFail()
+        {
+            // 建立測試新增資料（LastName Null）
+            var addRequest = new StudentRequest { FirstName = "add", LastName = "", Email = "add@example.com" };
+            _mockStudentRepository.Setup(r => r.AddStudent(It.IsAny<Student>()))
+                .Callback<Student>(s => _context.Students.Add(s));
+
+            var addResult = _studentService.AddStudent(addRequest);
+            Assert.That(addResult.Success, Is.False);
+            Assert.That(addResult.Message, Is.EqualTo("必填欄位不能為空"));
+        }
+        [Test] // 測試 AddStudent => Email empty
+        public void AddStudent_EmptyEmail_ReturnFail()
+        {
+            // 建立測試新增資料（Email Null）
+            var addRequest = new StudentRequest { FirstName = "add", LastName = "add", Email = "" };
             _mockStudentRepository.Setup(r => r.AddStudent(It.IsAny<Student>()))
                 .Callback<Student>(s => _context.Students.Add(s));
 

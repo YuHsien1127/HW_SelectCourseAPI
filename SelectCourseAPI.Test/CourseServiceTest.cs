@@ -42,11 +42,11 @@ namespace SelectCourseAPI.Test
             );
             // Seed Enrollment
             _context.Enrollments.AddRange(
-                new Enrollment { Id = 1, StudentId = 1, CourseId = 1, Grade = 90, LetterGrade = "A", GradePoint = 4m, RowVersion = 0, Status = "A " },
-                new Enrollment { Id = 2, StudentId = 1, CourseId = 3, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "W " },
-                new Enrollment { Id = 3, StudentId = 5, CourseId = 1, Grade = 80, LetterGrade = "B", GradePoint = 3m, RowVersion = 0, Status = "A " },
-                new Enrollment { Id = 4, StudentId = 3, CourseId = 1, Grade = 75, LetterGrade = "C", GradePoint = 2m, RowVersion = 0, Status = "A " },
-                new Enrollment { Id = 5, StudentId = 4, CourseId = 1, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "A " }
+                new Enrollment { Id = 1, StudentId = 1, CourseId = 1, Grade = 90, LetterGrade = "A", GradePoint = 4m, RowVersion = 0, Status = "A" },
+                new Enrollment { Id = 2, StudentId = 1, CourseId = 3, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "W" },
+                new Enrollment { Id = 3, StudentId = 5, CourseId = 1, Grade = 80, LetterGrade = "B", GradePoint = 3m, RowVersion = 0, Status = "A" },
+                new Enrollment { Id = 4, StudentId = 3, CourseId = 1, Grade = 75, LetterGrade = "C", GradePoint = 2m, RowVersion = 0, Status = "A" },
+                new Enrollment { Id = 5, StudentId = 4, CourseId = 1, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "A" }
             );
             _context.SaveChanges();
             _mockCourseRepository = new Mock<ICourseRepository>();
@@ -80,7 +80,7 @@ namespace SelectCourseAPI.Test
         public void GetAllCourses_ReturnIsActiveStudents()
         {
             _mockCourseRepository.Setup(r => r.GetAllCourses()).Returns(_context.Courses.AsQueryable());
-            var result = _courseService.GetAllCourses();
+            var result = _courseService.GetAllCourses(1, 10);
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("查詢成功"));
             Assert.That(result.Courses.Count, Is.EqualTo(3));
@@ -149,7 +149,7 @@ namespace SelectCourseAPI.Test
             Assert.That(addResult.Message, Is.EqualTo("新增成功"));
             Assert.That(addResult.Courses.Count, Is.EqualTo(1));
         }
-        [Test] // 測試 AddCourse => CourseRequest 為空
+        [Test] // 測試 AddCourse => CourseRequest null
         public void AddCourse_NullRequest_ReturnFail()
         {
             // 建立測試新增資料（Null）

@@ -3,6 +3,8 @@
     public class CourseResponse : BaseResponse
     {
         public List<CourseDto>? Courses { get; set; }
+        public int PageCount { get; set; }
+        public int TotalCount { get; set; }
     }
     public class CourseDto
     {

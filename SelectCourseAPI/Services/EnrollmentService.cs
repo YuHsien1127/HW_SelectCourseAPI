@@ -2,6 +2,7 @@
 using SelectCourseAPI.Dto.Response;
 using SelectCourseAPI.Models;
 using SelectCourseAPI.Repositorys;
+using X.PagedList.Extensions;
 
 namespace SelectCourseAPI.Services
 {
@@ -21,11 +22,11 @@ namespace SelectCourseAPI.Services
             _studentRepository = studentRepository;
         }
 
-        public EnrollmentResponse GetAllEnrollments()
+        public EnrollmentResponse GetAllEnrollments(int page, int pageSize)
         {
             _logger.LogTrace("【Trace】進入GetAllEnrollments");
             EnrollmentResponse response = new EnrollmentResponse();
-            var enrollment = _enrollmentRepository.GetAllEnrollments().Where(s => s.Status == "A ")
+            var enrollment = _enrollmentRepository.GetAllEnrollments().Where(s => s.Status == "A")
                 .Select(e => new EnrollmentDto
                 {
                     StudentId = e.StudentId,
@@ -48,7 +49,10 @@ namespace SelectCourseAPI.Services
                     LetterGrade = e.LetterGrade,
                     GradePoint = e.GradePoint,
                 });
-            response.Enrollments = enrollment.ToList();
+            var pagedList = enrollment.ToPagedList(page, pageSize);
+            response.Enrollments = pagedList.ToList();
+            response.PageCount = pagedList.PageCount;
+            response.TotalCount = pagedList.TotalItemCount;
             response.Success = true;
             response.Message = "查詢成功";
             _logger.LogTrace("【Trace】離開GetAllEnrollments");
@@ -73,7 +77,7 @@ namespace SelectCourseAPI.Services
                 response.Message = "無此選課資料";
                 return response;
             }
-            if (enrollment.Status == "W ")
+            if (enrollment.Status == "W")
             {
                 _logger.LogWarning("【Warning】已退選");
                 response.Success = false;
@@ -251,7 +255,13 @@ namespace SelectCourseAPI.Services
                     response.Message = "資料不存在";
                     return response;
                 }
-                
+                if (enrollment.Status == "W")
+                {
+                    _logger.LogWarning("【Warning】已退選");
+                    response.Success = false;
+                    response.Message = "已退選";
+                    return response;
+                }
                 if (enrollment.Grade != null)
                     enrollment.RowVersion += 1;
                 enrollment.Grade = enrollmentRequest.Grade;
@@ -293,7 +303,7 @@ namespace SelectCourseAPI.Services
                 {
                     _logger.LogWarning("【Warning】更新成績失敗");
                     response.Success = false;
-                    response.Message = "v失敗";
+                    response.Message = "更新成績失敗";
                 }
             }
             catch (Exception ex)

@@ -51,11 +51,11 @@ namespace SelectCourseAPI.Test
             );
             // Seed Enrollment
             _context.Enrollments.AddRange(
-                new Enrollment { Id = 1, StudentId = 1, CourseId = 1, Grade = 90, LetterGrade = "A", GradePoint = 4m, RowVersion = 0, Status = "A " },
-                new Enrollment { Id = 2, StudentId = 1, CourseId = 3, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "W " },
-                new Enrollment { Id = 3, StudentId = 5, CourseId = 4, Grade = 80, LetterGrade = "B", GradePoint = 3m, RowVersion = 0, Status = "A " },
-                new Enrollment { Id = 4, StudentId = 3, CourseId = 3, Grade = 75, LetterGrade = "C", GradePoint = 2m, RowVersion = 0, Status = "A " },
-                new Enrollment { Id = 5, StudentId = 4, CourseId = 1, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "A " }
+                new Enrollment { Id = 1, StudentId = 1, CourseId = 1, Grade = 90, LetterGrade = "A", GradePoint = 4m, RowVersion = 0, Status = "A" },
+                new Enrollment { Id = 2, StudentId = 1, CourseId = 3, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "W" },
+                new Enrollment { Id = 3, StudentId = 5, CourseId = 4, Grade = 80, LetterGrade = "B", GradePoint = 3m, RowVersion = 0, Status = "A" },
+                new Enrollment { Id = 4, StudentId = 3, CourseId = 3, Grade = 75, LetterGrade = "C", GradePoint = 2m, RowVersion = 0, Status = "A" },
+                new Enrollment { Id = 5, StudentId = 4, CourseId = 1, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "A" }
             );
             _context.SaveChanges();
 
@@ -102,7 +102,7 @@ namespace SelectCourseAPI.Test
         public void GetAllEnrollment_ReturnSuccess()
         {
             _mockEnrollmentRepository.Setup(r => r.GetAllEnrollments()).Returns(_context.Enrollments.AsQueryable());
-            var result = _enrollmentService.GetAllEnrollments();
+            var result = _enrollmentService.GetAllEnrollments(1, 10);
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("查詢成功"));
             Assert.That(result.Enrollments.Count, Is.EqualTo(4));
@@ -112,9 +112,7 @@ namespace SelectCourseAPI.Test
         [Test] // 測試 GetEnrollmentById => 存在
         public void GetEnrollmentById_ReturnSuccess()
         {
-            int studentId = 1, courseId = 1;
-            _mockEnrollmentRepository.Setup(r => r.GetEnrollmentById(studentId, courseId))
-                .Returns((int sId, int cId) => _context.Enrollments.FirstOrDefault(e => e.StudentId == sId && e.CourseId == cId));
+            int studentId = 1, courseId = 1;            
             var result = _enrollmentService.GetEnrollmentById(studentId, courseId);
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("查詢成功"));
@@ -124,8 +122,6 @@ namespace SelectCourseAPI.Test
         public void GetEnrollmentById_ZeroStudentId_ReturnFail()
         {
             int studentId = 0, courseId = 1;
-            _mockEnrollmentRepository.Setup(r => r.GetEnrollmentById(studentId, courseId))
-                .Returns((int sId, int cId) => _context.Enrollments.FirstOrDefault(e => e.StudentId == sId && e.CourseId == cId));
             var result = _enrollmentService.GetEnrollmentById(studentId, courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("StudentId或CourseId為空"));
@@ -134,8 +130,6 @@ namespace SelectCourseAPI.Test
         public void GetEnrollmentById_ZeroCourseId_ReturnFail()
         {
             int studentId = 1, courseId = 0;
-            _mockEnrollmentRepository.Setup(r => r.GetEnrollmentById(studentId, courseId))
-                .Returns((int sId, int cId) => _context.Enrollments.FirstOrDefault(e => e.StudentId == sId && e.CourseId == cId));
             var result = _enrollmentService.GetEnrollmentById(studentId, courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("StudentId或CourseId為空"));
@@ -144,8 +138,6 @@ namespace SelectCourseAPI.Test
         public void GetEnrollmentById_NoExisting_ReturnFail()
         {
             int studentId = 1, courseId = 4;
-            _mockEnrollmentRepository.Setup(r => r.GetEnrollmentById(studentId, courseId))
-                .Returns((int sId, int cId) => _context.Enrollments.FirstOrDefault(e => e.StudentId == sId && e.CourseId == cId));
             var result = _enrollmentService.GetEnrollmentById(studentId, courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("無此選課資料"));
@@ -153,8 +145,7 @@ namespace SelectCourseAPI.Test
         [Test] // 測試 GetEnrollmentById => 已退選
         public void GetEnrollmentById_Withdraw_ReturnFail()
         {
-            int studentId = 1, courseId = 3;
-            
+            int studentId = 1, courseId = 3;            
             var result = _enrollmentService.GetEnrollmentById(studentId, courseId);
             //Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("已退選"));
@@ -162,7 +153,7 @@ namespace SelectCourseAPI.Test
         #endregion
 
         #region Enroll
-        [Test] // 測試 Enroll
+        [Test] // 測試 Enroll => 成功
         public void Enroll_ReturnSuccess()
         {
             int studentId = 5, courseId = 3;
@@ -241,7 +232,7 @@ namespace SelectCourseAPI.Test
         #endregion
 
         #region UpdateGade
-        [Test] // 測試 UpdateGaded
+        [Test] // 測試 UpdateGaded => 成功
         public void UpdateGrade_ReturrnSuccess()
         {
             var enrollmentRequest = new EnrollmentRequest { StudentId = 1, CourseId = 1, Grade = 67 };
@@ -295,6 +286,7 @@ namespace SelectCourseAPI.Test
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("資料不完整"));
         }
+
         [Test] // 測試 UpdateGaded => Enrollment 不存在
         public void UpdateGrade_NoExisting_ReturrnFail()
         {
@@ -304,6 +296,16 @@ namespace SelectCourseAPI.Test
             var result = _enrollmentService.UpdateGrade(enrollmentRequest);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("資料不存在"));
+        }
+        [Test] // 測試 UpdateGaded => 已退選
+        public void UpdateGrade_IsWithdraw_ReturrnFail()
+        {
+            EnrollmentRequest enrollmentRequest = new EnrollmentRequest { StudentId = 1, CourseId = 3, Grade = 76 };
+            _mockEnrollmentRepository.Setup(r => r.UpdateEnrollment(It.IsAny<Enrollment>()))
+                .Callback<Enrollment>(e => _context.Enrollments.Update(e));
+            var result = _enrollmentService.UpdateGrade(enrollmentRequest);
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("已退選"));
         }
         [Test] // 測試 UpdateGaded => Grade 超出範圍
         public void UpdateGrade_OutOfRangeGrade_ReturrnFail()
@@ -328,7 +330,7 @@ namespace SelectCourseAPI.Test
         #endregion
 
         #region Withdraw
-        [Test] // 測試 Withdraw
+        [Test] // 測試 Withdraw => 成功
         public void Withdraw_RetunSuccess()
         {
             int studentId = 4, courseId = 1;

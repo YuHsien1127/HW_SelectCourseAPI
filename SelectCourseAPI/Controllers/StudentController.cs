@@ -20,11 +20,13 @@ namespace SelectCourseAPI.Controllers
         /// <summary>
         /// 取得所有 Student 資料
         /// </summary>
+        /// <param name="page">頁碼</param>
+        /// <param name="pageSize">幾筆</param>
         /// <returns></returns>
         [HttpGet]
-        public StudentResponse GetAllStudent()
+        public StudentResponse GetAllStudent(int page = 1, int pageSize = 10)
         {
-            return _studentSevice.GetAllStudents();
+            return _studentSevice.GetAllStudents(page, pageSize);
         }
 
         /// <summary>

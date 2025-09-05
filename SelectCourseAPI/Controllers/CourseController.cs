@@ -20,11 +20,13 @@ namespace SelectCourseAPI.Controllers
         /// <summary>
         /// 取得 Course 全部資料
         /// </summary>
+        /// <param name="page">頁碼</param>
+        /// <param name="pageSize">幾筆</param>
         /// <returns></returns>
         [HttpGet]
-        public CourseResponse GetAllCourses()
+        public CourseResponse GetAllCourses(int page = 1, int pageSize = 10)
         {
-            return _courseService.GetAllCourses();
+            return _courseService.GetAllCourses(page, pageSize);
         }
 
         /// <summary>

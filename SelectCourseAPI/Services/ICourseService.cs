@@ -5,7 +5,7 @@ namespace SelectCourseAPI.Services
 {
     public interface ICourseService
     {
-        public CourseResponse GetAllCourses();
+        public CourseResponse GetAllCourses(int page, int pageSize);
         public CourseResponse GetCourseById(int id);
         public CourseResponse AddCourse(CourseRequest courseRequest);
         public CourseResponse UpdateCourse(int id, CourseRequest courseRequest);

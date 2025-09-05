@@ -2,6 +2,7 @@
 using SelectCourseAPI.Dto.Response;
 using SelectCourseAPI.Models;
 using SelectCourseAPI.Repositorys;
+using X.PagedList.Extensions;
 
 namespace SelectCourseAPI.Services
 {
@@ -19,7 +20,7 @@ namespace SelectCourseAPI.Services
             _enrollmentRepository = enrollmentRepository;
         }
 
-        public CourseResponse GetAllCourses()
+        public CourseResponse GetAllCourses(int page, int pageSize)
         {
             _logger.LogTrace("【Trace】進入GetAllCourse");
             CourseResponse response = new CourseResponse();
@@ -33,7 +34,10 @@ namespace SelectCourseAPI.Services
                     Title = x.Title
                 });
             _logger.LogDebug("【Debug】取得Course數量：{courses.Count()}", courses.Count());
-            response.Courses = courses.ToList();
+            var pagedList = courses.ToPagedList(page, pageSize);
+            response.Courses = pagedList.ToList();
+            response.PageCount = pagedList.PageCount;
+            response.TotalCount = pagedList.TotalItemCount;
             response.Success = true;
             response.Message = "查詢成功";
             _logger.LogTrace("【Trace】離開GetAllCourse");
@@ -165,7 +169,7 @@ namespace SelectCourseAPI.Services
                     return response;
                 }
                 _logger.LogDebug("【Debug】準備刪除Course資料（Id ：{course.Id}）", course.Id);
-                var enrollmentCount = _enrollmentRepository.GetAllEnrollments().Where(c => c.CourseId == id && c.Status == "A ").Count();
+                var enrollmentCount = _enrollmentRepository.GetAllEnrollments().Where(c => c.CourseId == id && c.Status == "A").Count();
                 _logger.LogDebug("【Debug】enrollment資料（Count ：{enrollmentCount}）", enrollmentCount);
                 if(enrollmentCount > 0)
                 {

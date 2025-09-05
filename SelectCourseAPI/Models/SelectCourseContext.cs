@@ -66,8 +66,7 @@ namespace SelectCourseAPI.Models
                 entity.Property(e => e.Status)
                     .HasMaxLength(2)
                     .IsUnicode(false)
-                    .HasDefaultValueSql("('A')")
-                    .IsFixedLength();
+                    .HasDefaultValueSql("('A')");
 
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")

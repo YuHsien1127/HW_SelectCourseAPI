@@ -6,7 +6,7 @@ namespace SelectCourseAPI.Services
 {
     public interface IEnrollmentService
     {
-        public EnrollmentResponse GetAllEnrollments();
+        public EnrollmentResponse GetAllEnrollments(int page, int pageSize);
         public EnrollmentResponse GetEnrollmentById(int studentId, int courseId);
         public EnrollmentResponse Enroll(int studentId, int courseId);
         public EnrollmentResponse UpdateGrade(EnrollmentRequest enrollmentRequest);

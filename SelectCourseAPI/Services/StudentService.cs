@@ -3,6 +3,7 @@ using SelectCourseAPI.Dto.Response;
 using SelectCourseAPI.Models;
 using SelectCourseAPI.Repositorys;
 using System.Text.RegularExpressions;
+using X.PagedList.Extensions;
 
 namespace SelectCourseAPI.Services
 {
@@ -20,7 +21,7 @@ namespace SelectCourseAPI.Services
             _enrollmentRepository = enrollmentRepository;
         }
 
-        public StudentResponse GetAllStudents()
+        public StudentResponse GetAllStudents(int page, int pageSize)
         {
             _logger.LogTrace("【Trace】進入GetAllStudent");
             StudentResponse response = new StudentResponse();
@@ -35,7 +36,10 @@ namespace SelectCourseAPI.Services
                 });
             _logger.LogDebug("【Debug】取得Student數量：{students.Count()}", students.Count());
 
-            response.Students = students.ToList();
+            var pagedList = students.ToPagedList(page, pageSize);
+            response.Students = pagedList.ToList();
+            response.PageCount = pagedList.PageCount;
+            response.TotalCount = pagedList.TotalItemCount;
             response.Success = true;
             response.Message = "查詢成功";
             _logger.LogTrace("【Trace】離開GetAllStudent");
@@ -100,10 +104,10 @@ namespace SelectCourseAPI.Services
                     response.Message = "新增Student資料為空";
                     return response;
                 }
-                if (studentRequest != null)
+                else
                 {
                     // 驗證必填
-                    if (studentRequest.FirstName == null || studentRequest.LastName == null || studentRequest.Email == null)
+                    if (string.IsNullOrEmpty(studentRequest.FirstName) || string.IsNullOrEmpty(studentRequest.LastName) || string.IsNullOrEmpty(studentRequest.Email))
                     {
                         _logger.LogWarning("【Warning】必填欄位不能為空");
                         response.Success = false;
@@ -111,12 +115,14 @@ namespace SelectCourseAPI.Services
                         return response;
                     }
                 }
-                // 驗證 Email 格式
-                // ^（開頭）
-                // [^@\s]（不能是 @ 或空白的字元，至少一個）
-                // \.（一個小數點）
-                // $（結尾）
-                if (!Regex.IsMatch(studentRequest.Email, @"^[^@\s]+@example\.com$"))
+                /* Regex.IsMatch 正規畫用法，檢查指定的字串是否符合某個正則表達式模式
+                 * 驗證 Email 格式
+                 * ^（開頭）
+                 * [^@\s]（不能是 @ 或空白的字元，至少一個）
+                 * ([^.@\s]+\.)+ （一個或多個「子域名 + .」，例如 gmail.、co.、com.）
+                 * [^.@\s]+$ （最後的 TLD，不允許再有 .）
+                 */
+                if (!Regex.IsMatch(studentRequest.Email, @"^[^@\s]+@([^@\s]+\.)+[^@\s]+$"))
                 {
                     _logger.LogWarning("【Warning】Email（{studentRequest.Email}）格式不正確", studentRequest.Email);
                     response.Success = false;
@@ -200,9 +206,9 @@ namespace SelectCourseAPI.Services
                     response.Message = "此Id學生已停用";
                     return response;
                 }
-                existStudent.FirstName = studentRequest.FirstName == "" ? existStudent.FirstName : studentRequest.FirstName;
-                existStudent.LastName = studentRequest.LastName == "" ? existStudent.LastName : studentRequest.LastName;
-                existStudent.Email = studentRequest.Email == "" ? existStudent.Email : studentRequest.Email;
+                existStudent.FirstName = string.IsNullOrEmpty(studentRequest.FirstName) ? existStudent.FirstName : studentRequest.FirstName;
+                existStudent.LastName = string.IsNullOrEmpty(studentRequest.LastName) ? existStudent.LastName : studentRequest.LastName;
+                existStudent.Email = string.IsNullOrEmpty(studentRequest.Email) ? existStudent.Email : studentRequest.Email;
                 existStudent.UpdatedAt = DateTime.Now;
                 _studentRepository.UpdateStudent(existStudent);
                 int count = _context.SaveChanges();
@@ -259,7 +265,7 @@ namespace SelectCourseAPI.Services
                     return response;
                 }
                 _logger.LogDebug("【Debug】準備刪除Student資料（Id ：{student.Id}）", student.Id);
-                var enrollmentCount = _enrollmentRepository.GetAllEnrollments().Where(c => c.StudentId == id && c.Status == "A ").Count();
+                var enrollmentCount = _enrollmentRepository.GetAllEnrollments().Where(c => c.StudentId == id && c.Status == "A").Count();
                 _logger.LogDebug("【Debug】enrollment資料（Count ：{enrollmentCount}）", enrollmentCount);
                 if (enrollmentCount > 0)
                 {

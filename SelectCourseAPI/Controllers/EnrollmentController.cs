@@ -20,11 +20,13 @@ namespace SelectCourseAPI.Controllers
         /// <summary>
         /// 取得全部 Enrollment
         /// </summary>
+        /// <param name="page">頁碼</param>
+        /// <param name="pageSize">幾筆</param>
         /// <returns></returns>
         [HttpGet]
-        public EnrollmentResponse GetAllEnrollment()
+        public EnrollmentResponse GetAllEnrollment(int page = 1, int pageSize = 10)
         {
-            return _enrollmentService.GetAllEnrollments();
+            return _enrollmentService.GetAllEnrollments(page, pageSize);
         }
 
         /// <summary>

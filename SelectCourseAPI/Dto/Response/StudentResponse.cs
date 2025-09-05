@@ -3,6 +3,8 @@
     public class StudentResponse : BaseResponse
     {
         public List<StudentDto>? Students { get; set; }
+        public int PageCount { get; set; }
+        public int TotalCount { get; set; }
     }
     public class StudentDto
     {
