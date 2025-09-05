@@ -156,7 +156,7 @@ namespace SelectCourseAPI.Services
                 }
                 // 檢查是否已選過該課程
                 var existEnrollment = _enrollmentRepository.GetEnrollmentById(studentId, courseId);
-                if (existEnrollment != null)
+                if (existEnrollment != null && existEnrollment.Status == "A")
                 {
                     _logger.LogWarning("【Warning】學生已選過該課程：StudentId={StudentId}, CourseId={CourseId}", studentId, courseId);
                     response.Success = false;
@@ -164,7 +164,15 @@ namespace SelectCourseAPI.Services
                     _logger.LogTrace("【Trace】離開Enroll");
                     return response;
                 }
-
+                if (existEnrollment != null && existEnrollment.Status == "W")
+                {
+                    existEnrollment.Status = "A";
+                    existEnrollment.CreatedAt = DateTime.Now;
+                    _context.SaveChanges();
+                    response.Success = true;
+                    response.Message = "該課程已重新選課成功";
+                    return response;
+                }
                 // 新增選課
                 var enrollment = new Enrollment
                 {
@@ -175,30 +183,31 @@ namespace SelectCourseAPI.Services
                 };
                 _enrollmentRepository.AddEnrollment(enrollment);
                 int count = _context.SaveChanges();
-                var e = new EnrollmentDto
-                {
-                    StudentId = enrollment.StudentId,
-                    Student = new StudentDto
-                    {
-                        Id = studentId,
-                        FirstName = enrollment.Student.FirstName,
-                        LastName = enrollment.Student.LastName,
-                        Email = enrollment.Student.Email
-                    },
-                    CourseId = enrollment.CourseId,
-                    Courses = new CourseDto
-                    {
-                        Id = courseId,
-                        Code = enrollment.Course.Code,
-                        Credits = enrollment.Course.Credits,
-                        Title = enrollment.Course.Title
-                    },
-                    Grade = enrollment.Grade,
-                    LetterGrade = enrollment.LetterGrade,
-                    GradePoint = enrollment.GradePoint
-                };
+
                 if (count > 0)
                 {
+                    var e = new EnrollmentDto
+                    {
+                        StudentId = enrollment.StudentId,
+                        Student = new StudentDto
+                        {
+                            Id = studentId,
+                            FirstName = enrollment.Student.FirstName,
+                            LastName = enrollment.Student.LastName,
+                            Email = enrollment.Student.Email
+                        },
+                        CourseId = enrollment.CourseId,
+                        Courses = new CourseDto
+                        {
+                            Id = courseId,
+                            Code = enrollment.Course.Code,
+                            Credits = enrollment.Course.Credits,
+                            Title = enrollment.Course.Title
+                        },
+                        Grade = enrollment.Grade,
+                        LetterGrade = enrollment.LetterGrade,
+                        GradePoint = enrollment.GradePoint
+                    };
                     _logger.LogInformation("【Info】選課成功（StudentId/CourseId：{studentId}/{courseId}）", studentId, courseId); // log
                     response.Enrollments = new List<EnrollmentDto> { e };
                     response.Success = true;
@@ -222,9 +231,9 @@ namespace SelectCourseAPI.Services
         }
         /* 更新成績
          * 1. 課程若不存在 => 回傳404
-         * 2. 驗證 Grade 範圍
+         * 2. 驗證 Grade 範圍（0~100）
          * 3. 計算 LetterGrade/GradePoint
-         * 4. RowVersion 使用
+         * 4. RowVersion 使用 （更新一次 +1）
          */
         public EnrollmentResponse UpdateGrade(EnrollmentRequest enrollmentRequest)
         {
@@ -282,30 +291,30 @@ namespace SelectCourseAPI.Services
                 enrollment.UpdatedAt = DateTime.Now;
                 _enrollmentRepository.UpdateEnrollment(enrollment);
                 int count = _context.SaveChanges();
-                var e = new EnrollmentDto
-                {
-                    StudentId = enrollment.StudentId,
-                    Student = new StudentDto
-                    {
-                        Id = enrollment.StudentId,
-                        FirstName = enrollment.Student.FirstName,
-                        LastName = enrollment.Student.LastName,
-                        Email = enrollment.Student.Email
-                    },
-                    CourseId = enrollment.CourseId,
-                    Courses = new CourseDto
-                    {
-                        Id = enrollment.CourseId,
-                        Code = enrollment.Course.Code,
-                        Credits = enrollment.Course.Credits,
-                        Title = enrollment.Course.Title
-                    },
-                    Grade = enrollment.Grade,
-                    LetterGrade = enrollment.LetterGrade,
-                    GradePoint = enrollment.GradePoint,
-                };
                 if (count > 0)
                 {
+                    var e = new EnrollmentDto
+                    {
+                        StudentId = enrollment.StudentId,
+                        Student = new StudentDto
+                        {
+                            Id = enrollment.StudentId,
+                            FirstName = enrollment.Student.FirstName,
+                            LastName = enrollment.Student.LastName,
+                            Email = enrollment.Student.Email
+                        },
+                        CourseId = enrollment.CourseId,
+                        Courses = new CourseDto
+                        {
+                            Id = enrollment.CourseId,
+                            Code = enrollment.Course.Code,
+                            Credits = enrollment.Course.Credits,
+                            Title = enrollment.Course.Title
+                        },
+                        Grade = enrollment.Grade,
+                        LetterGrade = enrollment.LetterGrade,
+                        GradePoint = enrollment.GradePoint,
+                    };
                     _logger.LogInformation("【Info】更新成績成功（StudentId/CourseId：{enrollment.StudentId}/{enrollment.CourseId}）", enrollment.StudentId, enrollment.CourseId); // log
                     response.Enrollments = new List<EnrollmentDto> { e };
                     response.Success = true;
@@ -403,24 +412,26 @@ namespace SelectCourseAPI.Services
         // 計算 GradePoint
         private decimal GetGradePoint(string letterGrade)
         {
+            decimal point = 0;
             switch (letterGrade)
             {
                 case "A":
-                    return 4m;
+                    point = 4m;
                     break;
                 case "B":
-                    return 3m;
+                    point = 3m;
                     break;
                 case "C":
-                    return 2m;
+                    point = 2m;
                     break;
                 case "D":
-                    return 1m;
+                    point = 1m;
                     break;
                 default:
-                    return 0m;
+                    point = 0m;
                     break;
             }
+            return point;
         }
     }
 }

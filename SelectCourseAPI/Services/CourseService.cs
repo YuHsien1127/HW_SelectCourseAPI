@@ -119,16 +119,16 @@ namespace SelectCourseAPI.Services
                     CreatedAt = DateTime.Now
                 };
                 _courseRepository.AddCourse(course);
-                int count = _context.SaveChanges();
-                var c = new CourseDto
-                {
-                    Id = course.Id,
-                    Code = course.Code,
-                    Title = course.Title,
-                    Credits = course.Credits
-                };
+                int count = _context.SaveChanges();                
                 if (count > 0)
                 {
+                    var c = new CourseDto
+                    {
+                        Id = course.Id,
+                        Code = course.Code,
+                        Title = course.Title,
+                        Credits = course.Credits
+                    };
                     _logger.LogInformation("【Info】新增成功（Id：{course.Id}）", course.Id); // log
                     response.Courses = new List<CourseDto> { c };
                     response.Success = true;
@@ -250,16 +250,16 @@ namespace SelectCourseAPI.Services
                 existCourse.Credits = courseRequest.Credits == 0 ? existCourse.Credits : courseRequest.Credits;
                 existCourse.UpdatedAt = DateTime.Now;
                 _courseRepository.UpdateCourse(existCourse);
-                int count = _context.SaveChanges();
-                var c = new CourseDto
-                {
-                    Id = id,
-                    Code = existCourse.Code,
-                    Title = existCourse.Title,
-                    Credits = existCourse.Credits
-                };
+                int count = _context.SaveChanges();                
                 if (count > 0)
                 {
+                    var c = new CourseDto
+                    {
+                        Id = id,
+                        Code = existCourse.Code,
+                        Title = existCourse.Title,
+                        Credits = existCourse.Credits
+                    };
                     _logger.LogInformation("【Info】更新成功（Id：{id}）", id); // log
                     response.Courses = new List<CourseDto> { c };
                     response.Success = true;

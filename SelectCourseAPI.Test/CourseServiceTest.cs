@@ -110,7 +110,7 @@ namespace SelectCourseAPI.Test
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("Id為空"));
         }
-        [Test] // 測試 GetCourseById => 不存在
+        [Test] // 測試 GetCourseById => Course 不存在
         public void GetCourseById_NoExisting_ReturnFail()
         {
             int id = 99;

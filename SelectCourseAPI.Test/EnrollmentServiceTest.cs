@@ -136,7 +136,7 @@ namespace SelectCourseAPI.Test
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("StudentId或CourseId為空"));
         }
-        [Test] // 測試 GetEnrollmentById => 不存在
+        [Test] // 測試 GetEnrollmentById => Enrollment 不存在
         public void GetEnrollmentById_NoExisting_ReturnFail()
         {
             int studentId = 1, courseId = 4;
@@ -159,6 +159,15 @@ namespace SelectCourseAPI.Test
         public void Enroll_ReturnSuccess()
         {
             int studentId = 5, courseId = 3;
+            var result = _enrollmentService.Enroll(studentId, courseId);
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Message, Is.EqualTo("選課成功"));
+            Assert.That(result.Enrollments.Count, Is.EqualTo(1));
+        }
+        [Test] // 測試 Enroll => HasEnrollment && Enrollment.Status == "W" 成功
+        public void Enroll_HasEnrollmentIsWithdraw_ReturnSuccess()
+        {
+            int studentId = 1, courseId = 3;
             var result = _enrollmentService.Enroll(studentId, courseId);
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("選課成功"));
@@ -358,7 +367,7 @@ namespace SelectCourseAPI.Test
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("StudentId或CourseId為空"));
         }
-        [Test] // 測試 Withdraw => NoExisting
+        [Test] // 測試 Withdraw => Enrollment 不存在
         public void Withdraw_NoExisting_RetunFail()
         {
             int studentId = 1, courseId = 2;

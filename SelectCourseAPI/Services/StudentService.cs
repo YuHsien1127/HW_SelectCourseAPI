@@ -90,8 +90,8 @@ namespace SelectCourseAPI.Services
         /*
          * 新增學生
          * 1. 驗證必瑱（FirstName/LastName/Email 不能為 null & " "）
-         * 2. 驗證Email格式（ex. abc@example.com） 
-         * 3. 驗證Email是否已存在
+         * 2. 驗證 Email 格式（ex. abc@example.com） 
+         * 3. 驗證 Email 是否已存在
          */
         public StudentResponse AddStudent(StudentRequest studentRequest)
         {
@@ -154,16 +154,16 @@ namespace SelectCourseAPI.Services
                     CreatedAt = DateTime.Now
                 };
                 _studentRepository.AddStudent(student);
-                int count = _context.SaveChanges();
-                var s = new StudentDto
-                {
-                    Id = student.Id,
-                    FirstName = student.FirstName,
-                    LastName = student.LastName,
-                    Email = student.Email
-                };
+                int count = _context.SaveChanges();                
                 if (count > 0)
                 {
+                    var s = new StudentDto
+                    {
+                        Id = student.Id,
+                        FirstName = student.FirstName,
+                        LastName = student.LastName,
+                        Email = student.Email
+                    };
                     _logger.LogInformation("【Info】新增成功（Id：{student.Id}）", student.Id); // log
                     response.Students = new List<StudentDto> { s };
                     response.Success = true;
@@ -223,16 +223,16 @@ namespace SelectCourseAPI.Services
                 existStudent.Email = string.IsNullOrEmpty(studentRequest.Email) ? existStudent.Email : studentRequest.Email;
                 existStudent.UpdatedAt = DateTime.Now;
                 _studentRepository.UpdateStudent(existStudent);
-                int count = _context.SaveChanges();
-                var s = new StudentDto
-                {
-                    Id = id,
-                    FirstName = existStudent.FirstName,
-                    LastName = existStudent.LastName,
-                    Email = existStudent.Email
-                };
+                int count = _context.SaveChanges();                
                 if (count > 0)
                 {
+                    var s = new StudentDto
+                    {
+                        Id = id,
+                        FirstName = existStudent.FirstName,
+                        LastName = existStudent.LastName,
+                        Email = existStudent.Email
+                    };
                     _logger.LogInformation("【Info】更新成功（Id：{id}）", id); // log
                     response.Students = new List<StudentDto> { s };
                     response.Success = true;

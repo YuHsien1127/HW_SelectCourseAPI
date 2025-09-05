@@ -107,7 +107,7 @@ namespace SelectCourseAPI.Test
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("Id為空"));
         }
-        [Test] // 測試 GetStudentsById => 不存在
+        [Test] // 測試 GetStudentsById => Student 不存在
         public void GetStudentsById_NoExisting_ReturnFail()
         {
             int id = 99;
@@ -365,7 +365,7 @@ namespace SelectCourseAPI.Test
             var student = _context.Students.FirstOrDefault(s => s.Id == id);
             Assert.That(student.IsActive, Is.False);
         }
-        [Test] // 測試 DeleteStudent => HasEnrollment && Enrollment.Status == "W " 成功
+        [Test] // 測試 DeleteStudent => HasEnrollment && Enrollment.Status == "W" 成功
         public void DeleteStudent_HasEnrollmentIsWithDraw_ReturnSuccess()
         {
             int id = 1;
@@ -400,7 +400,7 @@ namespace SelectCourseAPI.Test
             Assert.That(deleteResult.Success, Is.False);
             Assert.That(deleteResult.Message, Is.EqualTo("無此Id學生"));
         }
-        [Test] // 測試 DeleteStudent => HasEnrollment && Enrollment.Status == "A "
+        [Test] // 測試 DeleteStudent => HasEnrollment && Enrollment.Status == "A"
         public void DeleteStudent_HasEnrollmentNoWithDraw_ReturnFail()
         {
             int id = 3;
