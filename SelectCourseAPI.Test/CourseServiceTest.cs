@@ -164,6 +164,54 @@ namespace SelectCourseAPI.Test
             Assert.That(addResult.Success, Is.False);
             Assert.That(addResult.Message, Is.EqualTo("新增Course資料為空"));
         }
+        [Test] // 測試 AddCourse => Code null
+        public void AddCourse_NullCode_ReturnFail()
+        {
+            // 建立測試新增資料
+            var addRequest = new CourseRequest { Code = null, Title = "add", Credits = 3 };
+            _mockCourseRepository.Setup(r => r.AddCourse(It.IsAny<Course>()))
+                .Callback<Course>(s => _context.Courses.Add(s));
+
+            var addResult = _courseService.AddCourse(addRequest);
+            Assert.That(addResult.Success, Is.False);
+            Assert.That(addResult.Message, Is.EqualTo("必填欄位不能為空"));
+        }
+        [Test] // 測試 AddCourse => Title null
+        public void AddCourse_NullTitle_ReturnFail()
+        {
+            // 建立測試新增資料
+            var addRequest = new CourseRequest { Code = "add", Title = null, Credits = 3 };
+            _mockCourseRepository.Setup(r => r.AddCourse(It.IsAny<Course>()))
+                .Callback<Course>(s => _context.Courses.Add(s));
+
+            var addResult = _courseService.AddCourse(addRequest);
+            Assert.That(addResult.Success, Is.False);
+            Assert.That(addResult.Message, Is.EqualTo("必填欄位不能為空"));
+        }
+        [Test] // 測試 AddCourse => Code Empty
+        public void AddCourse_EmptyCode_ReturnFail()
+        {
+            // 建立測試新增資料
+            var addRequest = new CourseRequest { Code = "", Title = "add", Credits = 3 };
+            _mockCourseRepository.Setup(r => r.AddCourse(It.IsAny<Course>()))
+                .Callback<Course>(s => _context.Courses.Add(s));
+
+            var addResult = _courseService.AddCourse(addRequest);
+            Assert.That(addResult.Success, Is.False);
+            Assert.That(addResult.Message, Is.EqualTo("必填欄位不能為空"));
+        }
+        [Test] // 測試 AddCourse => Title Empty
+        public void AddCourse_EmptyTitle_ReturnFail()
+        {
+            // 建立測試新增資料
+            var addRequest = new CourseRequest { Code = "add", Title = "", Credits = 3 };
+            _mockCourseRepository.Setup(r => r.AddCourse(It.IsAny<Course>()))
+                .Callback<Course>(s => _context.Courses.Add(s));
+
+            var addResult = _courseService.AddCourse(addRequest);
+            Assert.That(addResult.Success, Is.False);
+            Assert.That(addResult.Message, Is.EqualTo("必填欄位不能為空"));
+        }
         [Test] // 測試 AddCourse => Code 存在
         public void AddCourse_ExistingCode_ReturnFail()
         {
@@ -243,8 +291,8 @@ namespace SelectCourseAPI.Test
             Assert.That(updateResult.Success, Is.False);
             Assert.That(updateResult.Message, Is.EqualTo("Course資料為空"));
         }
-        [Test] // 測試 UpdateCourse => Course 已停用
-        public void UpdateCourse_NoIsActice_ReturnFail()
+        [Test] // 測試 UpdateCourse => Course 已刪除
+        public void UpdateCourse_IsDel_ReturnFail()
         {
             // 更新資料
             int id = 2;
@@ -254,7 +302,7 @@ namespace SelectCourseAPI.Test
 
             var updateResult = _courseService.UpdateCourse(id, updateRequest);
             Assert.That(updateResult.Success, Is.False);
-            Assert.That(updateResult.Message, Is.EqualTo("此Id課程已停用"));
+            Assert.That(updateResult.Message, Is.EqualTo("此Id課程已刪除"));
         }
         [Test] // 測試 UpdateCourse => try catch
         public void UpdateCourse_DbSaveFailure_ReturnFail()

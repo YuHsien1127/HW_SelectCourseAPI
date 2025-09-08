@@ -102,6 +102,14 @@ namespace SelectCourseAPI.Services
                     _logger.LogTrace("【Trace】離開AddCourse");
                     return response;
                 }
+                if(string.IsNullOrEmpty(courseRequest.Code) || string.IsNullOrEmpty(courseRequest.Title))
+                {
+                    _logger.LogWarning("【Warning】必填欄位不能為空");
+                    response.Success = false;
+                    response.Message = "必填欄位不能為空";
+                    _logger.LogTrace("【Trace】離開AddCourse");
+                    return response;
+                }
                 var existCourse = _courseRepository.GetCourseByCode(courseRequest.Code);
                 if (existCourse != null)
                 {
@@ -299,11 +307,11 @@ namespace SelectCourseAPI.Services
                     _logger.LogTrace("【Trace】離開UpdateCourse");
                     return response;
                 }
-                if (existCourse.IsActive == false)
+                if (existCourse.IsDel == true)
                 {
-                    _logger.LogWarning("【Warning】此Id（{Id}）課程已停用", id);
+                    _logger.LogWarning("【Warning】此Id（{Id}）課程已刪除", id);
                     response.Success = false;
-                    response.Message = "此Id課程已停用";
+                    response.Message = "此Id課程已刪除";
                     _logger.LogTrace("【Trace】離開UpdateCourse");
                     return response;
                 }
