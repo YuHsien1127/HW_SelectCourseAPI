@@ -25,7 +25,7 @@ namespace SelectCourseAPI.Services
             _logger.LogTrace("【Trace】進入GetAllCourse");
             CourseResponse response = new CourseResponse();
 
-            var courses = _courseRepository.GetAllCourses().Where(i => i.IsActive == true)
+            var courses = _courseRepository.GetAllCourses().Where(i => i.IsDel == false)
                 .Select(x => new CourseDto
                 {
                     Id = x.Id,
@@ -65,11 +65,11 @@ namespace SelectCourseAPI.Services
                 _logger.LogTrace("【Trace】離開GetCourseById");
                 return response;
             }
-            if (course.IsActive == false)
+            if (course.IsDel == true)
             {
-                _logger.LogWarning("【Warning】此Id（{Id}）課程已停用", id);
+                _logger.LogWarning("【Warning】此Id（{Id}）課程已刪除", id);
                 response.Success = false;
-                response.Message = "此Id課程已停用";
+                response.Message = "此Id課程已刪除";
                 _logger.LogTrace("【Trace】離開GetCourseById");
                 return response;
             }
@@ -150,7 +150,71 @@ namespace SelectCourseAPI.Services
             _logger.LogTrace("【Trace】離開AddCourse");
             return response;
         }
+        
+        // 關閉課程（IsActice）
+        public CourseResponse StopCourse(int id)
+        {
+            _logger.LogTrace("【Trace】進入StopCourse");
+            CourseResponse response = new CourseResponse();
 
+            try
+            {
+                if (id == 0)
+                {
+                    _logger.LogWarning("【Warning】Id（{id}）為空", id);
+                    response.Success = false;
+                    response.Message = "Id為空";
+                    _logger.LogTrace("【Trace】離開StopCourse");
+                    return response;
+                }
+                var course = _courseRepository.GetCourseById(id);
+                if (course == null)
+                {
+                    _logger.LogWarning("【Warning】無此Id（{Id}）課程", id);
+                    response.Success = false;
+                    response.Message = "無此Id課程";
+                    _logger.LogTrace("【Trace】離開StopCourse");
+                    return response;
+                }
+                _logger.LogDebug("【Debug】準備刪除Course資料（Id ：{course.Id}）", course.Id);
+                var enrollmentCount = _enrollmentRepository.GetAllEnrollments()
+                    .Where(c => c.CourseId == id && c.Status == "A").Count();
+                _logger.LogDebug("【Debug】enrollment資料（Count ：{enrollmentCount}）", enrollmentCount);
+                if(enrollmentCount > 0)
+                {
+                    _logger.LogWarning("【Warning】有被選課，無法關閉課程");
+                    response.Success = false;
+                    response.Message = "有被選課，無法關閉課程";
+                    _logger.LogTrace("【Trace】離開StopCourse");
+                    return response;
+                }
+                course.IsActive = false;
+                course.UpdatedAt = DateTime.Now;
+                _courseRepository.UpdateCourse(course);
+                int count = _context.SaveChanges();
+                if (count > 0)
+                {
+                    _logger.LogInformation("【Info】關閉課程成功（Id：{course.Id}）", course.Id); // log
+                    response.Success = true;
+                    response.Message = "關閉課程成功";
+                }
+                else
+                {
+                    _logger.LogWarning("【Warning】關閉課程失敗");
+                    response.Success = false;
+                    response.Message = "關閉課程失敗";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "【Error】刪除發生錯誤"); //log 嚴重錯誤
+                response.Success = false;
+                response.Message = "刪除發生錯誤";
+            }
+            _logger.LogTrace("【Trace】離開StopCourse");
+            return response;
+        }
+        // 刪除課程（IsDel）
         public CourseResponse DeleteCourse(int id)
         {
             _logger.LogTrace("【Trace】進入DeleteCourse");
@@ -176,17 +240,15 @@ namespace SelectCourseAPI.Services
                     return response;
                 }
                 _logger.LogDebug("【Debug】準備刪除Course資料（Id ：{course.Id}）", course.Id);
-                var enrollmentCount = _enrollmentRepository.GetAllEnrollments().Where(c => c.CourseId == id && c.Status == "A").Count();
-                _logger.LogDebug("【Debug】enrollment資料（Count ：{enrollmentCount}）", enrollmentCount);
-                if(enrollmentCount > 0)
+                if(course.IsActive == true)
                 {
-                    _logger.LogWarning("【Warning】有被選課，無法刪除");
+                    _logger.LogWarning("【Warning】此Id（{Id}）課程還在進行中", id);
                     response.Success = false;
-                    response.Message = "有被選課，無法刪除";
+                    response.Message = "此Id課程還在進行中";
                     _logger.LogTrace("【Trace】離開DeleteCourse");
                     return response;
                 }
-                course.IsActive = false;
+                course.IsDel = true;
                 course.UpdatedAt = DateTime.Now;
                 _courseRepository.UpdateCourse(course);
                 int count = _context.SaveChanges();

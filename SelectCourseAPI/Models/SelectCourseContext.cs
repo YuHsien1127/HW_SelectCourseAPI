@@ -101,6 +101,12 @@ namespace SelectCourseAPI.Models
 
                 entity.Property(e => e.LastName).HasMaxLength(50);
 
+                entity.Property(e => e.Password).HasMaxLength(50);
+
+                entity.Property(e => e.Role)
+                    .HasMaxLength(50)
+                    .HasDefaultValueSql("(user_name())");
+
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");

@@ -35,10 +35,10 @@ namespace SelectCourseAPI.Test
 
             // Seed 初始資料
             _context.Courses.AddRange(
-                new Course { Id = 1, Code = "A", Title = "B", Credits = 3, IsActive = true },
-                new Course { Id = 2, Code = "C", Title = "D", Credits = 3, IsActive = false },
-                new Course { Id = 3, Code = "E", Title = "F", Credits = 3, IsActive = true },
-                new Course { Id = 4, Code = "G", Title = "H", Credits = 3, IsActive = true }
+                new Course { Id = 1, Code = "A", Title = "B", Credits = 3, IsActive = true, IsDel = false },
+                new Course { Id = 2, Code = "C", Title = "D", Credits = 3, IsActive = false, IsDel = true },
+                new Course { Id = 3, Code = "E", Title = "F", Credits = 3, IsActive = true, IsDel = false },
+                new Course { Id = 4, Code = "G", Title = "H", Credits = 3, IsActive = true, IsDel = false }
             );
             // Seed Enrollment
             _context.Enrollments.AddRange(
@@ -120,15 +120,15 @@ namespace SelectCourseAPI.Test
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("無此Id課程"));
         }
-        [Test] // 測試 GetCourseById => IsActive == false
-        public void GetCourseById_NoIsActice_ReturnFail()
+        [Test] // 測試 GetCourseById => IsDel == true
+        public void GetCourseById_IsDel_ReturnFail()
         {
             int id = 2;
             _mockCourseRepository.Setup(r => r.GetCourseById(It.IsAny<int>()))
                 .Returns((int id) => _context.Courses.FirstOrDefault(s => s.Id == id));
             var result = _courseService.GetCourseById(id);
             Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("此Id課程已停用"));
+            Assert.That(result.Message, Is.EqualTo("此Id課程已刪除"));
         }
         #endregion
 
@@ -142,6 +142,7 @@ namespace SelectCourseAPI.Test
                 .Callback<Course>(c =>
                 {
                     c.IsActive = true; // 確保 IsActive 設置
+                    c.IsDel = false;
                     c.CreatedAt = DateTime.Now; // 確保 CreatedAt 設置
                     _context.Courses.Add(c);
                 });
@@ -270,24 +271,84 @@ namespace SelectCourseAPI.Test
         }
         #endregion
 
-        #region DeleteCourse
+        #region StopCourse
         [Test] // 測試 DeleteCourse => 成功
-        public void DeleteCourse_ReturnSuccess()
+        public void StopCourse_ReturnSuccess()
         {
             int id = 4;
             _mockCourseRepository.Setup(r => r.UpdateCourse(It.IsAny<Course>()))
                 .Callback<Course>(c => _context.Courses.Update(c));
 
-            var deleteResult = _courseService.DeleteCourse(id);
+            var deleteResult = _courseService.StopCourse(id);
             Assert.That(deleteResult.Success, Is.True);
-            Assert.That(deleteResult.Message, Is.EqualTo("刪除成功"));
+            Assert.That(deleteResult.Message, Is.EqualTo("關閉課程成功"));
             var course = _context.Courses.FirstOrDefault(s => s.Id == id);
             Assert.That(course.IsActive, Is.False);
         }
         [Test] // 測試 DeleteCourse => HasEnrollment && Enrollment.Status == "W " 成功
-        public void DeleteCourse_HasEnrollmentIsWithDraw_ReturnSuccess()
+        public void StopCourse_HasEnrollmentIsWithDraw_ReturnSuccess()
         {
             int id = 3;
+            _mockCourseRepository.Setup(r => r.UpdateCourse(It.IsAny<Course>()))
+                .Callback<Course>(c => _context.Courses.Update(c));
+
+            var deleteResult = _courseService.StopCourse(id);
+            Assert.That(deleteResult.Success, Is.True);
+            Assert.That(deleteResult.Message, Is.EqualTo("關閉課程成功"));
+            var course = _context.Courses.FirstOrDefault(s => s.Id == id);
+            Assert.That(course.IsActive, Is.False);
+        }
+        [Test] // 測試 DeleteCourse => Id 為 0
+        public void StopCourse_ZeroId_ReturnFail()
+        {
+            int id = 0;
+            _mockCourseRepository.Setup(r => r.UpdateCourse(It.IsAny<Course>()))
+                .Callback<Course>(c => _context.Courses.Update(c));
+
+            var deleteResult = _courseService.StopCourse(id);
+            Assert.That(deleteResult.Success, Is.False);
+            Assert.That(deleteResult.Message, Is.EqualTo("Id為空"));
+        }
+        [Test] // 測試 DeleteCourse => Course 不存在
+        public void StopCourse_NoExisting_ReturnFail()
+        {
+            int id = 99;
+            _mockCourseRepository.Setup(r => r.UpdateCourse(It.IsAny<Course>()))
+                .Callback<Course>(c => _context.Courses.Update(c));
+
+            var deleteResult = _courseService.StopCourse(id);
+            Assert.That(deleteResult.Success, Is.False);
+            Assert.That(deleteResult.Message, Is.EqualTo("無此Id課程"));
+        }
+        [Test] // 測試 DeleteCourse => HasEnrollment && Enrollment.Status == "A "
+        public void StopCourse_HasEnrollmentNoWithDraw_ReturnFail()
+        {
+            int id = 1;
+            _mockCourseRepository.Setup(r => r.UpdateCourse(It.IsAny<Course>()))
+                .Callback<Course>(c => _context.Courses.Update(c));
+
+            var deleteResult = _courseService.StopCourse(id);
+            Assert.That(deleteResult.Success, Is.False);
+            Assert.That(deleteResult.Message, Is.EqualTo("有被選課，無法關閉課程"));
+        }
+        [Test] // 測試 DeleteCourse => try catch
+        public void StopCourse_DbSaveFailure_ReturnFail()
+        {
+            int id = 4;
+            _mockCourseRepository.Setup(r => r.UpdateCourse(It.IsAny<Course>()))
+                .Throws(new DbUpdateException("模擬資料庫儲存失敗"));
+
+            var deleteResult = _courseService.StopCourse(id);
+            Assert.That(deleteResult.Success, Is.False);
+            Assert.That(deleteResult.Message, Is.EqualTo("刪除發生錯誤"));
+        }
+        #endregion
+
+        #region DeleteCourse
+        [Test] // 測試 DeleteCourse => 成功
+        public void DeleteCourse_ReturnSuccess()
+        {
+            int id = 2;
             _mockCourseRepository.Setup(r => r.UpdateCourse(It.IsAny<Course>()))
                 .Callback<Course>(c => _context.Courses.Update(c));
 
@@ -319,8 +380,8 @@ namespace SelectCourseAPI.Test
             Assert.That(deleteResult.Success, Is.False);
             Assert.That(deleteResult.Message, Is.EqualTo("無此Id課程"));
         }
-        [Test] // 測試 DeleteCourse => HasEnrollment && Enrollment.Status == "A "
-        public void DeleteCourse_HasEnrollmentNoWithDraw_ReturnFail()
+        [Test] // 測試 DeleteCourse => IsActice == true
+        public void DeleteCourse_IsActice_ReturnFail()
         {
             int id = 1;
             _mockCourseRepository.Setup(r => r.UpdateCourse(It.IsAny<Course>()))
@@ -328,12 +389,12 @@ namespace SelectCourseAPI.Test
 
             var deleteResult = _courseService.DeleteCourse(id);
             Assert.That(deleteResult.Success, Is.False);
-            Assert.That(deleteResult.Message, Is.EqualTo("有被選課，無法刪除"));
+            Assert.That(deleteResult.Message, Is.EqualTo("此Id課程還在進行中"));
         }
         [Test] // 測試 DeleteCourse => try catch
         public void DeleteCourse_DbSaveFailure_ReturnFail()
         {
-            int id = 4;
+            int id = 2;
             _mockCourseRepository.Setup(r => r.UpdateCourse(It.IsAny<Course>()))
                 .Throws(new DbUpdateException("模擬資料庫儲存失敗"));
 
@@ -342,6 +403,5 @@ namespace SelectCourseAPI.Test
             Assert.That(deleteResult.Message, Is.EqualTo("刪除發生錯誤"));
         }
         #endregion
-
     }
 }

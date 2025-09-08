@@ -87,6 +87,7 @@ namespace SelectCourseAPI.Services
             _logger.LogTrace("【Trace】離開GetStudentById");
             return response;
         }
+
         /*
          * 新增學生
          * 1. 驗證必瑱（FirstName/LastName/Email 不能為 null & " "）
@@ -111,7 +112,8 @@ namespace SelectCourseAPI.Services
                 else
                 {
                     // 驗證必填
-                    if (string.IsNullOrEmpty(studentRequest.FirstName) || string.IsNullOrEmpty(studentRequest.LastName) || string.IsNullOrEmpty(studentRequest.Email))
+                    if (string.IsNullOrEmpty(studentRequest.FirstName) || string.IsNullOrEmpty(studentRequest.LastName) 
+                        || string.IsNullOrEmpty(studentRequest.Email) || string.IsNullOrEmpty(studentRequest.Password))
                     {
                         _logger.LogWarning("【Warning】必填欄位不能為空");
                         response.Success = false;
@@ -133,7 +135,6 @@ namespace SelectCourseAPI.Services
                     response.Success = false;
                     response.Message = "Email格式不正確";
                     _logger.LogTrace("【Trace】離開AddStudent");
-                    _logger.LogTrace("【Trace】離開AddStudent");
                     return response;
                 }
                 // 檢查 Email 是否已存在
@@ -151,6 +152,7 @@ namespace SelectCourseAPI.Services
                     FirstName = studentRequest.FirstName,
                     LastName = studentRequest.LastName,
                     Email = studentRequest.Email,
+                    Password = studentRequest.Password,
                     CreatedAt = DateTime.Now
                 };
                 _studentRepository.AddStudent(student);
@@ -162,7 +164,7 @@ namespace SelectCourseAPI.Services
                         Id = student.Id,
                         FirstName = student.FirstName,
                         LastName = student.LastName,
-                        Email = student.Email
+                        Email = student.Email                        
                     };
                     _logger.LogInformation("【Info】新增成功（Id：{student.Id}）", student.Id); // log
                     response.Students = new List<StudentDto> { s };
@@ -221,6 +223,7 @@ namespace SelectCourseAPI.Services
                 existStudent.FirstName = string.IsNullOrEmpty(studentRequest.FirstName) ? existStudent.FirstName : studentRequest.FirstName;
                 existStudent.LastName = string.IsNullOrEmpty(studentRequest.LastName) ? existStudent.LastName : studentRequest.LastName;
                 existStudent.Email = string.IsNullOrEmpty(studentRequest.Email) ? existStudent.Email : studentRequest.Email;
+                existStudent.Password = string.IsNullOrEmpty(studentRequest.Password) ? existStudent.Password : studentRequest.Password;
                 existStudent.UpdatedAt = DateTime.Now;
                 _studentRepository.UpdateStudent(existStudent);
                 int count = _context.SaveChanges();                

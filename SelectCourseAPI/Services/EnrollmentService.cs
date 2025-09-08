@@ -26,7 +26,7 @@ namespace SelectCourseAPI.Services
         {
             _logger.LogTrace("【Trace】進入GetAllEnrollments");
             EnrollmentResponse response = new EnrollmentResponse();
-            var enrollment = _enrollmentRepository.GetAllEnrollments().Where(s => s.Status == "A")
+            var enrollment = _enrollmentRepository.GetAllEnrollments().Where(s => s.Status == "A" || s.Status == "C")
                 .Select(e => new EnrollmentDto
                 {
                     StudentId = e.StudentId,
@@ -171,6 +171,7 @@ namespace SelectCourseAPI.Services
                     _context.SaveChanges();
                     response.Success = true;
                     response.Message = "該課程已重新選課成功";
+                    _logger.LogTrace("【Trace】離開Enroll");
                     return response;
                 }
                 // 新增選課
@@ -283,6 +284,14 @@ namespace SelectCourseAPI.Services
                     _logger.LogTrace("【Trace】離開UpdateGrade");
                     return response;
                 }
+                if(enrollment.Status == "C")
+                {
+                    _logger.LogWarning("【Warning】課程已結束，無法更新成績");
+                    response.Success = false;
+                    response.Message = "課程已結束，無法更新成績";
+                    _logger.LogTrace("【Trace】離開UpdateGrade");
+                    return response;
+                }                        
                 if (enrollment.Grade != null)
                     enrollment.RowVersion += 1;
                 enrollment.Grade = enrollmentRequest.Grade;

@@ -15,8 +15,9 @@ namespace SelectCourseAPI.Models
         public string Title { get; set; } = null!;
         public int Credits { get; set; }
         public bool? IsActive { get; set; }
+        public bool IsDel { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
         public virtual ICollection<Enrollment> Enrollments { get; set; }
     }

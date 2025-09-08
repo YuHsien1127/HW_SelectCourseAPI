@@ -36,25 +36,25 @@ namespace SelectCourseAPI.Test
 
             // Seed Student
             _context.Students.AddRange(
-                new Student { Id = 1, FirstName = "A", LastName = "B", Email = "ab@example.com", IsActive = true },
-                new Student { Id = 2, FirstName = "C", LastName = "D", Email = "cd@example.com", IsActive = false },
-                new Student { Id = 3, FirstName = "E", LastName = "F", Email = "ef@example.com", IsActive = true },
-                new Student { Id = 4, FirstName = "G", LastName = "H", Email = "gh@example.com", IsActive = true },
-                new Student { Id = 5, FirstName = "I", LastName = "J", Email = "ij@example.com", IsActive = true }
+                new Student { Id = 1, FirstName = "A", LastName = "B", Email = "ab@example.com", Password = "abPassword", Role = "user", IsActive = true },
+                new Student { Id = 2, FirstName = "C", LastName = "D", Email = "cd@example.com", Password = "cdPassword", Role = "user", IsActive = false },
+                new Student { Id = 3, FirstName = "E", LastName = "F", Email = "ef@example.com", Password = "efPassword", Role = "user", IsActive = true },
+                new Student { Id = 4, FirstName = "G", LastName = "H", Email = "gh@example.com", Password = "ghPassword", Role = "user", IsActive = true },
+                new Student { Id = 5, FirstName = "I", LastName = "J", Email = "ij@example.com", Password = "ijPassword", Role = "user", IsActive = true }
             );
             // Seed Course
             _context.Courses.AddRange(
-                new Course { Id = 1, Code = "C001", Title = "Math", Credits = 3, IsActive = true },
-                new Course { Id = 2, Code = "C002", Title = "History", Credits = 2, IsActive = false },
-                new Course { Id = 3, Code = "C003", Title = "English", Credits = 3, IsActive = true },
-                new Course { Id = 4, Code = "C004", Title = "Chinese", Credits = 3, IsActive = true }
+                new Course { Id = 1, Code = "C001", Title = "Math", Credits = 3, IsActive = true, IsDel = false },
+                new Course { Id = 2, Code = "C002", Title = "History", Credits = 2, IsActive = false, IsDel = false },
+                new Course { Id = 3, Code = "C003", Title = "English", Credits = 3, IsActive = true, IsDel = false },
+                new Course { Id = 4, Code = "C004", Title = "Chinese", Credits = 3, IsActive = true, IsDel = false }
             );
             // Seed Enrollment
             _context.Enrollments.AddRange(
                 new Enrollment { Id = 1, StudentId = 1, CourseId = 1, Grade = 90, LetterGrade = "A", GradePoint = 4m, RowVersion = 0, Status = "A" },
                 new Enrollment { Id = 2, StudentId = 1, CourseId = 3, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "W" },
                 new Enrollment { Id = 3, StudentId = 5, CourseId = 4, Grade = 80, LetterGrade = "B", GradePoint = 3m, RowVersion = 0, Status = "A" },
-                new Enrollment { Id = 4, StudentId = 3, CourseId = 3, Grade = 75, LetterGrade = "C", GradePoint = 2m, RowVersion = 0, Status = "A" },
+                new Enrollment { Id = 4, StudentId = 3, CourseId = 3, Grade = 75, LetterGrade = "C", GradePoint = 2m, RowVersion = 0, Status = "C" },
                 new Enrollment { Id = 5, StudentId = 4, CourseId = 1, Grade = null, LetterGrade = null, GradePoint = null, RowVersion = 0, Status = "A" }
             );
             _context.SaveChanges();
@@ -170,8 +170,10 @@ namespace SelectCourseAPI.Test
             int studentId = 1, courseId = 3;
             var result = _enrollmentService.Enroll(studentId, courseId);
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Message, Is.EqualTo("選課成功"));
-            Assert.That(result.Enrollments.Count, Is.EqualTo(1));
+            Assert.That(result.Message, Is.EqualTo("該課程已重新選課成功"));
+            var enrollment = _context.Enrollments
+               .FirstOrDefault(e => e.StudentId == studentId && e.CourseId == courseId);
+            Assert.That(enrollment.Status, Is.EqualTo("A"));
         }
         [Test] // 測試 Enroll => studentId == 0
         public void Enroll_ZeroStudentId_ReturnFail()
@@ -326,6 +328,16 @@ namespace SelectCourseAPI.Test
             var result = _enrollmentService.UpdateGrade(enrollmentRequest);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("成績超過範圍（0~100）"));
+        }
+        [Test] // 測試 UpdateGaded => 已結束課程
+        public void UpdateGrade_EndCourse_ReturrnFail()
+        {
+            EnrollmentRequest enrollmentRequest = new EnrollmentRequest { StudentId = 3, CourseId = 3, Grade = 76 };
+            _mockEnrollmentRepository.Setup(r => r.UpdateEnrollment(It.IsAny<Enrollment>()))
+                .Callback<Enrollment>(e => _context.Enrollments.Update(e));
+            var result = _enrollmentService.UpdateGrade(enrollmentRequest);
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.Message, Is.EqualTo("課程已結束，無法更新成績"));
         }
         [Test] // 測試 UpdateGaded => try catch
         public void UpdateGrade_DbSaveFailure_ReturrnFail()

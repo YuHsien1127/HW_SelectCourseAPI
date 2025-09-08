@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SelectCourseAPI.Dto.Request;
 using SelectCourseAPI.Dto.Response;
 using SelectCourseAPI.Services;
@@ -9,6 +10,7 @@ namespace SelectCourseAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize(Roles = "admit, user")]
     public class StudentController : ControllerBase
     {
         private IStudentService _studentSevice;
@@ -46,6 +48,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="studentRequest">Student 資料</param>
         /// <returns></returns>
         [HttpPost]
+        [AllowAnonymous]
         public StudentResponse AddStudent([FromBody] StudentRequest studentRequest)
         {
             return _studentSevice.AddStudent(studentRequest);
