@@ -26,6 +26,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="pageSize">幾筆</param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "admit, user")]
         public CourseResponse GetAllCourses(int page = 1, int pageSize = 10)
         {
             return _courseService.GetAllCourses(page, pageSize);
@@ -37,6 +38,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="id">課程 Id</param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "admit, user")]
         public CourseResponse GetCourseById(int id = 0)
         {
             return _courseService.GetCourseById(id);
