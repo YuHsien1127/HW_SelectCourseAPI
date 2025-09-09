@@ -27,6 +27,8 @@ builder.Host.UseNLog();
 // DbContext 註冊(SQL Server)
 builder.Services.AddDbContext<SelectCourseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// HttpContextAccessor → 允許在 Service 中取得目前的 HttpContext
+builder.Services.AddHttpContextAccessor();
 // 自訂服務註冊
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();

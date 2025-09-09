@@ -39,9 +39,9 @@ namespace SelectCourseAPI.Controllers
         /// <param name="courseId">課程 Id</param>
         /// <returns></returns>
         [HttpGet]
-        public EnrollmentResponse GetEnrollment(int studentId = 0, int courseId = 0)
+        public EnrollmentResponse GetEnrollment(int courseId = 0)
         {
-            return _enrollmentService.GetEnrollmentById(studentId, courseId);
+            return _enrollmentService.GetEnrollmentById(courseId);
         }
 
         /// <summary>
@@ -51,9 +51,9 @@ namespace SelectCourseAPI.Controllers
         /// <param name="courseId">課程 Id</param>
         /// <returns></returns>
         [HttpPost]
-        public EnrollmentResponse Enroll(int studentId = 0 , int courseId = 0)
+        public EnrollmentResponse Enroll(int courseId = 0)
         {
-            return _enrollmentService.Enroll(studentId, courseId);
+            return _enrollmentService.Enroll(courseId);
         }
 
         /// <summary>
@@ -62,6 +62,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="enrollmentRequest">更新資料</param>
         /// <returns></returns>
         [HttpPut]
+        [Authorize(Roles = "admit")]
         public EnrollmentResponse UpdateGrade([FromBody] EnrollmentRequest enrollmentRequest)
         {
             return _enrollmentService.UpdateGrade(enrollmentRequest);
@@ -73,9 +74,9 @@ namespace SelectCourseAPI.Controllers
         /// <param name="courseId">課程 Id</param>
         /// <returns></returns>
         [HttpDelete]
-        public EnrollmentResponse Withdraw(int studentId = 0, int courseId = 0)
+        public EnrollmentResponse Withdraw(int courseId = 0)
         {
-            return _enrollmentService.Withdraw(studentId, courseId);
+            return _enrollmentService.Withdraw(courseId);
         }
     }
 }

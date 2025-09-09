@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SelectCourseAPI.Dto.Request;
@@ -8,6 +9,7 @@ using SelectCourseAPI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +24,7 @@ namespace SelectCourseAPI.Test
         private Mock<IStudentRepository> _mockStudentRepository;
         private Mock<ICourseRepository> _mockCourseRepository;
         private Mock<IEnrollmentRepository> _mockEnrollmentRepository;
+        private Mock<IHttpContextAccessor> _mockHttpContextAccessor;
 
         [SetUp]
         public void Setup()
@@ -69,6 +72,8 @@ namespace SelectCourseAPI.Test
 
             _mockStudentRepository.Setup(r => r.GetStudentById(It.IsAny<int>()))
                 .Returns((int id) => _context.Students.FirstOrDefault(s => s.Id == id));
+            _mockStudentRepository.Setup(r => r.GetStudentByEmail(It.IsAny<string>()))
+                .Returns((string email) => _context.Students.FirstOrDefault(s => s.Email == email));
 
             _mockEnrollmentRepository.Setup(r => r.GetEnrollmentById(It.IsAny<int>(), It.IsAny<int>()))
                 .Returns((int sId, int cId) => _context.Enrollments.FirstOrDefault(e => e.StudentId == sId && e.CourseId == cId));
@@ -83,12 +88,14 @@ namespace SelectCourseAPI.Test
                 .Callback<Enrollment>(e => _context.Enrollments.Update(e));
 
             _mockLogger = new Mock<ILogger<EnrollmentService>>();
+            _mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
             _enrollmentService = new EnrollmentService(
                 _context,
                 _mockLogger.Object,
                 _mockEnrollmentRepository.Object,
                 _mockCourseRepository.Object,
-                _mockStudentRepository.Object
+                _mockStudentRepository.Object,
+                _mockHttpContextAccessor.Object
             );
         }
 
@@ -114,41 +121,41 @@ namespace SelectCourseAPI.Test
         [Test] // 測試 GetEnrollmentById => 存在
         public void GetEnrollmentById_ReturnSuccess()
         {
-            int studentId = 1, courseId = 1;            
-            var result = _enrollmentService.GetEnrollmentById(studentId, courseId);
+            string email = "ab@example.com";
+            SetupHttpContext(email);
+            int courseId = 1;            
+            var result = _enrollmentService.GetEnrollmentById(courseId);
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("查詢成功"));
             Assert.That(result.Enrollments[0].Grade, Is.EqualTo(90));
         }
-        [Test] // 測試 GetEnrollmentById => studentId == 0
-        public void GetEnrollmentById_ZeroStudentId_ReturnFail()
-        {
-            int studentId = 0, courseId = 1;
-            var result = _enrollmentService.GetEnrollmentById(studentId, courseId);
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("StudentId或CourseId為空"));
-        }
         [Test] // 測試 GetEnrollmentById => courseId == 0
         public void GetEnrollmentById_ZeroCourseId_ReturnFail()
         {
-            int studentId = 1, courseId = 0;
-            var result = _enrollmentService.GetEnrollmentById(studentId, courseId);
+            string email = "ab@example.com";
+            SetupHttpContext(email);
+            int courseId = 0;
+            var result = _enrollmentService.GetEnrollmentById(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("StudentId或CourseId為空"));
         }
         [Test] // 測試 GetEnrollmentById => Enrollment 不存在
         public void GetEnrollmentById_NoExisting_ReturnFail()
         {
-            int studentId = 1, courseId = 4;
-            var result = _enrollmentService.GetEnrollmentById(studentId, courseId);
+            string email = "ab@example.com";
+            SetupHttpContext(email);
+            int courseId = 4;
+            var result = _enrollmentService.GetEnrollmentById(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("無此選課資料"));
         }
         [Test] // 測試 GetEnrollmentById => 已退選
         public void GetEnrollmentById_Withdraw_ReturnFail()
         {
-            int studentId = 1, courseId = 3;            
-            var result = _enrollmentService.GetEnrollmentById(studentId, courseId);
+            string email = "ab@example.com";
+            SetupHttpContext(email);
+            int courseId = 3;            
+            var result = _enrollmentService.GetEnrollmentById(courseId);
             //Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("已退選"));
         }
@@ -158,8 +165,10 @@ namespace SelectCourseAPI.Test
         [Test] // 測試 Enroll => 成功
         public void Enroll_ReturnSuccess()
         {
-            int studentId = 5, courseId = 3;
-            var result = _enrollmentService.Enroll(studentId, courseId);
+            string email = "ij@example.com";
+            SetupHttpContext(email);
+            int courseId = 3;
+            var result = _enrollmentService.Enroll(courseId);
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("選課成功"));
             Assert.That(result.Enrollments.Count, Is.EqualTo(1));
@@ -167,78 +176,68 @@ namespace SelectCourseAPI.Test
         [Test] // 測試 Enroll => HasEnrollment && Enrollment.Status == "W" 成功
         public void Enroll_HasEnrollmentIsWithdraw_ReturnSuccess()
         {
-            int studentId = 1, courseId = 3;
-            var result = _enrollmentService.Enroll(studentId, courseId);
+            string email = "ab@example.com";
+            SetupHttpContext(email);
+            int courseId = 3;
+            var result = _enrollmentService.Enroll(courseId);
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("該課程已重新選課成功"));
+            var studentId = _context.Students.First(s => s.Email == email).Id;
             var enrollment = _context.Enrollments
                .FirstOrDefault(e => e.StudentId == studentId && e.CourseId == courseId);
             Assert.That(enrollment.Status, Is.EqualTo("A"));
-        }
-        [Test] // 測試 Enroll => studentId == 0
-        public void Enroll_ZeroStudentId_ReturnFail()
-        {
-            int studentId = 0, courseId = 3;
-            var result = _enrollmentService.Enroll(studentId, courseId);
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("Id為空"));
-        }
+        }        
         [Test] // 測試 Enroll => courseId == 0
         public void Enroll_ZeroCourseId_ReturnFail()
         {
-            int studentId = 5, courseId = 0;
-            var result = _enrollmentService.Enroll(studentId, courseId);
+            string email = "ij@example.com";
+            SetupHttpContext(email);
+            int courseId = 0;
+            var result = _enrollmentService.Enroll(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("Id為空"));
-        }
-        [Test] // 測試 Enroll => Student null
-        public void Enroll_NullStudent_ReturnFail()
-        {
-            int studentId = 99, courseId = 3;
-            var result = _enrollmentService.Enroll(studentId, courseId);
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("學生不存在或已停用"));
-        }
-        [Test] // 測試 Enroll => Student.IsActice == false
-        public void Enroll_NoIsActiceStudent_ReturnFail()
-        {
-            int studentId = 2, courseId = 3;
-            var result = _enrollmentService.Enroll(studentId, courseId);
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("學生不存在或已停用"));
-        }
+        }        
+
         [Test] // 測試 Enroll => Course null
         public void Enroll_NullCourse_ReturnFail()
         {
-            int studentId = 5, courseId = 99;
-            var result = _enrollmentService.Enroll(studentId, courseId);
+            string email = "ij@example.com";
+            SetupHttpContext(email);
+            int courseId = 99;
+            var result = _enrollmentService.Enroll(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("課程不存在或已停用"));
         }
         [Test] // 測試 Enroll => Course.IsActice == false
         public void Enroll_NoIsActiceCourse_ReturnFail()
         {
-            int studentId = 5, courseId = 2;
-            var result = _enrollmentService.Enroll(studentId, courseId);
+            string email = "ij@example.com";
+            SetupHttpContext(email);
+            int courseId = 2;
+            var result = _enrollmentService.Enroll(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("課程不存在或已停用"));
         }
         [Test] // 測試 Enroll => 已選課
         public void Enroll_HasCourse_ReturnFail()
         {
-            int studentId = 1, courseId = 1;
-            var result = _enrollmentService.Enroll(studentId, courseId);
+            string email = "ab@example.com";
+            SetupHttpContext(email);
+            int courseId = 1;
+            var result = _enrollmentService.Enroll(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("已選過該課程"));
         }
         [Test] // 測試 AddCourse => try catch
         public void Enroll_DbSaveFailure_ReturnFail()
         {
-            int studentId = 5, courseId = 1;
+            string email = "ij@example.com";
+            SetupHttpContext(email);
+            int courseId = 1;
             _mockEnrollmentRepository.Setup(r => r.AddEnrollment(It.IsAny<Enrollment>()))
                 .Throws(new DbUpdateException("模擬資料庫儲存失敗"));
 
-            var result = _enrollmentService.Enroll(studentId, courseId);
+            var result = _enrollmentService.Enroll(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("選課發生錯誤"));
         }
@@ -355,59 +354,73 @@ namespace SelectCourseAPI.Test
         [Test] // 測試 Withdraw => 成功
         public void Withdraw_RetunSuccess()
         {
-            int studentId = 4, courseId = 1;
+            string email = "gh@example.com";
+            SetupHttpContext(email);
+            int courseId = 1;
 
-            var result = _enrollmentService.Withdraw(studentId, courseId);
+            var result = _enrollmentService.Withdraw(courseId);
             Assert.That(result.Success, Is.True);
             Assert.That(result.Message, Is.EqualTo("退選成功"));
-        }
-        [Test] // 測試 Withdraw => StudentId == 0
-        public void Withdraw_ZeroStudentId_RetunFail()
-        {
-            int studentId = 0, courseId = 1;
-
-            var result = _enrollmentService.Withdraw(studentId, courseId);
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.Message, Is.EqualTo("StudentId或CourseId為空"));
         }
         [Test] // 測試 Withdraw => CourseId == 0
         public void Withdraw_ZeroCourseId_RetunFail()
         {
-            int studentId = 4, courseId = 0;
+            string email = "gh@example.com";
+            SetupHttpContext(email);
+            int courseId = 0;
 
-            var result = _enrollmentService.Withdraw(studentId, courseId);
+            var result = _enrollmentService.Withdraw(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("StudentId或CourseId為空"));
         }
         [Test] // 測試 Withdraw => Enrollment 不存在
         public void Withdraw_NoExisting_RetunFail()
         {
-            int studentId = 1, courseId = 2;
+            string email = "ab@example.com";
+            SetupHttpContext(email);
+            int courseId = 2;
 
-            var result = _enrollmentService.Withdraw(studentId, courseId);
+            var result = _enrollmentService.Withdraw(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("無此選課資料"));
         }
         [Test] // 測試 Withdraw => HasGrade
         public void Withdraw_HasGrade_RetunFail()
         {
-            int studentId = 1, courseId = 1;
+            string email = "ab@example.com";
+            SetupHttpContext(email);
+            int courseId = 1;
 
-            var result = _enrollmentService.Withdraw(studentId, courseId);
+            var result = _enrollmentService.Withdraw(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("已有成績，無法退選"));
         }
         [Test] // 測試 Withdraw => try catchh
         public void Withdraw_DbSaveFailure_RetunFail()
         {
-            int studentId = 4, courseId = 1;
+            string email = "gh@example.com";
+            SetupHttpContext(email);
+            int courseId = 1;
             _mockEnrollmentRepository.Setup(r => r.UpdateEnrollment(It.IsAny<Enrollment>()))
                 .Throws(new DbUpdateException("更新成績發生錯誤"));
 
-            var result = _enrollmentService.Withdraw(studentId, courseId);
+            var result = _enrollmentService.Withdraw(courseId);
             Assert.That(result.Success, Is.False);
             Assert.That(result.Message, Is.EqualTo("退選發生錯誤"));
         }
         #endregion
+
+        // 模擬登入使用者的 HttpContext
+        private void SetupHttpContext(string email)
+        {
+            var claims = new[] { new Claim(ClaimTypes.NameIdentifier, email) };
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var principal = new ClaimsPrincipal(identity);
+
+            var context = new Mock<HttpContext>();
+            context.Setup(c => c.User).Returns(principal);
+
+            _mockHttpContextAccessor.Setup(h => h.HttpContext).Returns(context.Object);
+        }
     }
 }

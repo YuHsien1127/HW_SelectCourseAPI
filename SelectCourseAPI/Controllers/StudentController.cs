@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using SelectCourseAPI.Dto.Request;
 using SelectCourseAPI.Dto.Response;
+using SelectCourseAPI.Models;
+using SelectCourseAPI.Repositorys;
 using SelectCourseAPI.Services;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

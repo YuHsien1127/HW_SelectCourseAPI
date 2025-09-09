@@ -22,7 +22,7 @@ namespace SelectCourseAPI.Controllers
         public IActionResult Login([FromBody] LoginRequest loginRequest)
         {
             var student = _studentRepository.GetStudentByEmail(loginRequest.Email);
-            if (student != null && student.Password == loginRequest.Password)
+            if (student != null && student.Password == loginRequest.Password && student.IsActive == true)
             {
                 var token = _authService.GenerateJwtToken(student.Email, student.Role);
                 return Ok("Bearer " + token);

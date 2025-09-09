@@ -2,6 +2,7 @@
 using SelectCourseAPI.Dto.Response;
 using SelectCourseAPI.Models;
 using SelectCourseAPI.Repositorys;
+using System.Security.Claims;
 using X.PagedList.Extensions;
 
 namespace SelectCourseAPI.Services
@@ -13,13 +14,16 @@ namespace SelectCourseAPI.Services
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ICourseRepository _courseRepository;
         private readonly IStudentRepository _studentRepository;
-        public EnrollmentService(SelectCourseContext context, ILogger<EnrollmentService> logger, IEnrollmentRepository enrollmentRepository, ICourseRepository courseRepository, IStudentRepository studentRepository)
+        private readonly IHttpContextAccessor _HttpContextAccessor;
+        public EnrollmentService(SelectCourseContext context, ILogger<EnrollmentService> logger, IEnrollmentRepository enrollmentRepository
+            , ICourseRepository courseRepository, IStudentRepository studentRepository, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _logger = logger;
             _enrollmentRepository = enrollmentRepository;
             _courseRepository = courseRepository;
             _studentRepository = studentRepository;
+            _HttpContextAccessor = httpContextAccessor;
         }
 
         public EnrollmentResponse GetAllEnrollments(int page, int pageSize)
@@ -58,11 +62,11 @@ namespace SelectCourseAPI.Services
             _logger.LogTrace("【Trace】離開GetAllEnrollments");
             return response;
         }
-        public EnrollmentResponse GetEnrollmentById(int studentId, int courseId)
+        public EnrollmentResponse GetEnrollmentById(int courseId)
         {
             _logger.LogTrace("【Trace】進入GetEnrollmentById");
             EnrollmentResponse response = new EnrollmentResponse();
-            if (studentId == 0 || courseId == 0)
+            if (courseId == 0)
             {
                 _logger.LogWarning("【Warning】StudentId或CourseId為空");
                 response.Success = false;
@@ -70,6 +74,8 @@ namespace SelectCourseAPI.Services
                 _logger.LogTrace("【Trace】離開GetEnrollmentById");
                 return response;
             }
+            var email = _HttpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            int studentId = _studentRepository.GetStudentByEmail(email).Id;
             var enrollment = _enrollmentRepository.GetEnrollmentById(studentId, courseId);
             if (enrollment == null)
             {
@@ -120,14 +126,14 @@ namespace SelectCourseAPI.Services
          * 1. 驗證 Student/Course 存在且 IsActice
          * 2. 檢查是否已選過該課程
          */
-        public EnrollmentResponse Enroll(int studentId, int courseId)
+        public EnrollmentResponse Enroll(int courseId)
         {
             _logger.LogTrace("【Trace】進入Enroll");
             EnrollmentResponse response = new EnrollmentResponse();
 
             try
             {
-                if (studentId == 0 || courseId == 0)
+                if (courseId == 0)
                 {
                     _logger.LogWarning("【Warning】Id為空");
                     response.Success = false;
@@ -135,16 +141,8 @@ namespace SelectCourseAPI.Services
                     _logger.LogTrace("【Trace】離開Enroll");
                     return response;
                 }
-                // 驗證 Student/Course 存在且 IsActice
-                var student = _studentRepository.GetStudentById(studentId);
-                if (student == null || student.IsActive == false)
-                {
-                    _logger.LogWarning("【Warning】StudentId不存在或已停用：{StudentId}", studentId);
-                    response.Success = false;
-                    response.Message = "學生不存在或已停用";
-                    _logger.LogTrace("【Trace】離開Enroll");
-                    return response;
-                }
+                var email = _HttpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                int studentId = _studentRepository.GetStudentByEmail(email).Id;                
                 var course = _courseRepository.GetCourseById(courseId);
                 if (course == null || course.IsActive == false)
                 {
@@ -350,14 +348,14 @@ namespace SelectCourseAPI.Services
          * 2. 退選時若有成績則無法退選
          * 3. 退選時無成績，則將 Status 設定 W
          */
-        public EnrollmentResponse Withdraw(int studentId, int courseId)
+        public EnrollmentResponse Withdraw(int courseId)
         {
             _logger.LogTrace("【Trace】進入Withdraw");
             EnrollmentResponse response = new EnrollmentResponse();
 
             try
             {
-                if (studentId == 0 || courseId == 0)
+                if (courseId == 0)
                 {
                     _logger.LogWarning("【Warning】StudentId或CourseId為空");
                     response.Success = false;
@@ -365,6 +363,8 @@ namespace SelectCourseAPI.Services
                     _logger.LogTrace("【Trace】離開Withdraw");
                     return response;
                 }
+                var email = _HttpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                int studentId = _studentRepository.GetStudentByEmail(email).Id;
                 var enrollment = _enrollmentRepository.GetEnrollmentById(studentId, courseId);
                 if (enrollment == null)
                 {
