@@ -70,13 +70,13 @@ namespace SelectCourseAPI.Controllers
         }
 
         /// <summary>
-        /// 關閉課程（IsActice）
+        /// 停止課程（IsActice）
         /// </summary>
         /// <param name="id">課程 Id</param>
         /// <returns></returns>
         [HttpDelete]
         [Authorize(Roles = "admit")]
-        public CourseResponse CloseCourse(int id = 0)
+        public CourseResponse StopCourse(int id = 0)
         {
             return _courseService.StopCourse(id);
         }
