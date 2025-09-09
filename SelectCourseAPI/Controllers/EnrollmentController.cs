@@ -35,7 +35,6 @@ namespace SelectCourseAPI.Controllers
         /// <summary>
         /// 根據 studentId 和 courseId 取得 Enrollment
         /// </summary>
-        /// <param name="studentId">學生 Id</param>
         /// <param name="courseId">課程 Id</param>
         /// <returns></returns>
         [HttpGet]
@@ -47,7 +46,6 @@ namespace SelectCourseAPI.Controllers
         /// <summary>
         /// 選課
         /// </summary>
-        /// <param name="studentId">學生 Id</param>
         /// <param name="courseId">課程 Id</param>
         /// <returns></returns>
         [HttpPost]
@@ -70,7 +68,6 @@ namespace SelectCourseAPI.Controllers
         /// <summary>
         /// 退選
         /// </summary>
-        /// <param name="studentId">學生 Id</param>
         /// <param name="courseId">課程 Id</param>
         /// <returns></returns>
         [HttpDelete]
