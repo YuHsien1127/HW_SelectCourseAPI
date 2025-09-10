@@ -11,7 +11,7 @@ namespace SelectCourseAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(Roles = "admit, user")]
+    [Authorize(Roles = "admin, user")]
     public class EnrollmentController : ControllerBase
     {
         private readonly IEnrollmentService _enrollmentService;

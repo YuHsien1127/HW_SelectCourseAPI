@@ -15,11 +15,15 @@ namespace SelectCourseAPI.Repositorys
         {
             return _context.Enrollments.Include(s => s.Student).Include(c => c.Course);
         }
-
         public Enrollment GetEnrollmentById(int studentId, int courseId)
         {
             return _context.Enrollments.Include(s => s.Student).Include(c => c.Course)
                 .FirstOrDefault(x => x.StudentId == studentId && x.CourseId == courseId);
+        }
+        public Enrollment GetEnrollmentByStudentId(int studentId)
+        {
+            return _context.Enrollments.Include(s => s.Student).Include(c => c.Course)
+                .FirstOrDefault(x => x.StudentId == studentId);
         }
 
         public void AddEnrollment(Enrollment enrollment)

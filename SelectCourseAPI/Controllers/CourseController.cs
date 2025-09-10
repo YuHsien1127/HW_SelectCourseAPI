@@ -26,7 +26,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="pageSize">幾筆</param>
         /// <returns></returns>
         [HttpGet]
-        [Authorize(Roles = "admit, user")]
+        [Authorize(Roles = "admin, user")]
         public CourseResponse GetAllCourses(int page = 1, int pageSize = 10)
         {
             return _courseService.GetAllCourses(page, pageSize);
@@ -38,7 +38,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="id">課程 Id</param>
         /// <returns></returns>
         [HttpGet]
-        [Authorize(Roles = "admit, user")]
+        [Authorize(Roles = "admin, user")]
         public CourseResponse GetCourseById(int id = 0)
         {
             return _courseService.GetCourseById(id);
@@ -50,7 +50,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="courseRequest">Course 資料</param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles = "admit")]
+        [Authorize(Roles = "admin")]
         public CourseResponse AddCourse([FromBody] CourseRequest courseRequest)
         {
             return _courseService.AddCourse(courseRequest);
@@ -63,7 +63,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="id">課程 Id</param>
         /// <returns></returns>
         [HttpPut]
-        [Authorize(Roles = "admit")]
+        [Authorize(Roles = "admin")]
         public CourseResponse UpdateCourse([FromBody] CourseRequest courseRequest, int id = 0)
         {
             return _courseService.UpdateCourse(id, courseRequest);
@@ -75,7 +75,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="id">課程 Id</param>
         /// <returns></returns>
         [HttpDelete]
-        [Authorize(Roles = "admit")]
+        [Authorize(Roles = "admin")]
         public CourseResponse StopCourse(int id = 0)
         {
             return _courseService.StopCourse(id);
@@ -86,7 +86,7 @@ namespace SelectCourseAPI.Controllers
         /// <param name="id">課程 Id</param>
         /// <returns></returns>
         [HttpDelete]
-        [Authorize(Roles = "admit")]
+        [Authorize(Roles = "admin")]
         public CourseResponse DeleteCourse(int id = 0)
         {
             return _courseService.DeleteCourse(id);

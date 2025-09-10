@@ -17,7 +17,11 @@ namespace SelectCourseAPI.Controllers
             _authService = authService;
             _studentRepository = studentRepository;
         }
-
+        /// <summary>
+        /// 登入，取得 token
+        /// </summary>
+        /// <param name="loginRequest">登入資料（Email/Password）</param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Login([FromBody] LoginRequest loginRequest)
         {

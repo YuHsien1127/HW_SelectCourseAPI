@@ -13,7 +13,7 @@ namespace SelectCourseAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(Roles = "admit, user")]
+    [Authorize(Roles = "admin, user")]
     public class StudentController : ControllerBase
     {
         private IStudentService _studentSevice;
