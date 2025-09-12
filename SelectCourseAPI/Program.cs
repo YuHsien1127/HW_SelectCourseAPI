@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
+using SelectCourseAPI.Middleware_Filter;
 using SelectCourseAPI.Models;
 using SelectCourseAPI.Repositorys;
 using SelectCourseAPI.Services;
@@ -34,6 +35,11 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+});
+builder.Services.AddScoped<LoggingFilter>();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.AddService<LoggingFilter>(); // 全域套用
 });
 // 自訂服務註冊
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
@@ -103,6 +109,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -114,7 +121,8 @@ app.UseHttpsRedirection();
 // 啟用 JWT 驗證 / 授權
 app.UseAuthentication();
 app.UseAuthorization();
-
+// Middleware
+app.UseMiddleware<LoggingMiddleware>();
 app.MapControllers();
 
 app.Run();
